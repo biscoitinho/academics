@@ -74,8 +74,9 @@ puts PI
 ```
 ## Control Flow
 # Conditional statements and loops for controlling program flow.
+
+# if / elsif / else
 ```ruby
-if / elsif / else
 x = 10
 if x > 0
   puts "Positive"
@@ -127,8 +128,9 @@ end
 ```
 ## Methods
 # Defining reusable functions, with support for default, variable, and keyword arguments.
+
+# Define method
 ```ruby
-Define method
 def add(a,b)
   a + b
 end
