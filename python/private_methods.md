@@ -1,54 +1,54 @@
-In Python, there three types of Python Private Method used in class:
+In Python, there are three types of Python Private Method used in class:
 
-Private
-Protected
-Public
+- Private
+- Protected
+- Public
 
-Private
+## Private
 
 Double underscores, accessible only within class
 
-```
+```python
 class Detail:
-def __init__(self,FN,LN):
-self.__firstname = FN
-self.__lastname = LN
-print("Done!")
-d1=Detail("Rea","Messi")
+    def __init__(self, FN, LN):
+        self.__firstname = FN
+        self.__lastname = LN
+        print("Done!")
+
+d1 = Detail("Rea", "Messi")
 print(d1.__firstname)
 print(d1.__lastname)
 ```
 
-=> `AttributeError 'Detail' object has no attribute '__firstname'`
+Output: `AttributeError 'Detail' object has no attribute '__firstname'`
 
+## Protected
 
-Protected
-
-Single underscore methods accesssible within class and it's sub-classes.
+Single underscore methods accessible within class and its sub-classes.
 Protected data members are used when you implement inheritance
 and want to allow data members access to only child classes.
 
-```
+```python
 class Detail:
-def __init__(self,FN,LN):
-self._firstname = FN
-self._lastname = LN
-print("Done!")
-d1=Detail("Rea","Messi")
+    def __init__(self, FN, LN):
+        self._firstname = FN
+        self._lastname = LN
+        print("Done!")
+
+d1 = Detail("Rea", "Messi")
 print(d1._firstname)
 print(d1._lastname)
 ```
 
-=> Executes without errors
+Output: Executes without errors
 
+## Access the private members outside the class
 
-Access the private members outside the class:
+Pattern: `"__<className>_<attributeName>"`
 
-`"__<className>_<attributeName>"`
+Known as name mangling
 
-Known as name mingling
-
-```
+```python
 class DataScience:
     def PrintMe(self):
         return 'Printed'
@@ -58,19 +58,15 @@ class DataScience:
 
 DS = DataScience()
 print(DS.PrintMe())
-print(DS._DataScience__PrintMeNot() )
+print(DS._DataScience__PrintMeNot())
 ```
 
-Public variable
-Accessible from anywhere
+## Summary
 
-Public method
-Accessible from anywhere
+**Public variable**: Accessible from anywhere
 
-Private variable
-It is represented with two underscores at the start.
-It is accessible within the class.
+**Public method**: Accessible from anywhere
 
-Private method
-This is also represented by two underscores at the start.
-It is accessible within the class.
+**Private variable**: Represented with two underscores at the start, accessible within the class only
+
+**Private method**: Represented with two underscores at the start, accessible within the class only

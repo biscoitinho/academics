@@ -1,51 +1,51 @@
-@classmethod
-can only access the class object
-can't modify object instance state
-can modify class state
+## @classmethod
+Can only access the class object
+Can't modify object instance state
+Can modify class state
 
-```
-My_class:
+```python
+class My_class:
     @classmethod
-    method(cls):
+    def method(cls):
         return 'class method called', cls
 ```
 
-class method can be used as a factory function:
+Class method can be used as a factory function:
 
-```
+```python
 class Pizza:
-    def __init__(self, ingridients):
-        self.ingridients = ingridients
+    def __init__(self, ingredients):
+        self.ingredients = ingredients
 
     @classmethod
-    def margeritha(cls):
-        return cls(['cheese', 'tomatos'])
+    def margherita(cls):
+        return cls(['cheese', 'tomatoes'])
 
-Pizza.margeritha()
+Pizza.margherita()
 ```
 
-#=> Pizza object with margeritha ingridients
+Returns a Pizza object with margherita ingredients
 
 Used for custom inits in class
 
-@staticmethod
-can't modify object instance state
-can't modify class state
+## @staticmethod
+Can't modify object instance state
+Can't modify class state
 
-```
-My_class:
+```python
+class My_class:
     @staticmethod
-    method():
+    def method():
         return 'static method called'
 ```
 
-plain method:
-within method we can modify and read objects on an instance of a class
-can modify object instance state
-can modify class state
+## Plain method
+Within method we can modify and read objects on an instance of a class
+Can modify object instance state
+Can modify class state
 
-```
-My_class:
-    method(self):
+```python
+class My_class:
+    def method(self):
         return 'instance method called', self
 ```

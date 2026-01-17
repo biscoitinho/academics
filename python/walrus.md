@@ -1,7 +1,9 @@
-`:=` - assigment expression
+`:=` - assignment expression
 
-Assigns a value to a variable as a part of a larger expression
+Assigns a value to a variable as part of a larger expression.
 
-`print(happy := True)`
+```python
+print(happy := True)
+```
 
 

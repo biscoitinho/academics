@@ -1,9 +1,8 @@
-High order function:
+## High order function
 
-Function which accepts function as an argument or returns a function.
+Function which accepts a function as an argument or returns a function.
 
-
-```
+```python
 def loud(text):
     return text.upper()
 
@@ -17,13 +16,13 @@ def hello(func):
 hello(loud)
 ```
 
-```
+```python
 def divisor(x):
     def dividend(y):
         return y / x
     return dividend
 
-divide = devisor(2)
+divide = divisor(2)
 print(divide(10))
 ```
 

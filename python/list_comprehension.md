@@ -1,60 +1,75 @@
+## List Comprehension
+
 Basic syntax:
 
-`new_list = [expression for member in iterable]`
-or with conditional statement
-`new_list = [expression for member in iterable if conditional]`
+```python
+new_list = [expression for member in iterable]
+```
 
-for loop example:
+Or with conditional statement:
+```python
+new_list = [expression for member in iterable if conditional]
+```
 
-'''
-arr = [1,2,3,4,5]
+### For loop example
+
+```python
+arr = [1, 2, 3, 4, 5]
 
 for _ in arr:
     print(_**_)
-'''
+```
 
-list comprehention:
-'''
-[ n**n for n in arr]
-'''
+### List comprehension
 
-map:
-'''
+```python
+[n**n for n in arr]
+```
+
+### Map
+
+```python
 list(map(lambda n: n**n, arr))
-'''
+```
 
-list comprehention with conditional:
-'''
+### List comprehension with conditional
+
+```python
 [n**n for n in arr if n > 0]
-'''
+```
 
-with a function:
-'''
+### With a function
+
+```python
 def make_it_big(num):
-   return num**num
+    return num**num
 
 [make_it_big(n) for n in arr]
-'''
+```
 
-set/dict comprehentions:
+### Set/Dict comprehensions
 
-set:
-'''
+**Set:**
+```python
 {n**n for n in arr}
-'''
+```
 
-dict:
-'''
+**Dict:**
+```python
 {n: n**n for n in arr}
-'''
+```
 
-matrix:
-'''
+### Matrix
+
+```python
 [[n for n in range(3)] for i in range(3)]
-'''
-output=>
+```
+
+Output:
+```python
 [
-    [0,1,2],
-    [0,1,2],
-    [0,1,2]
+    [0, 1, 2],
+    [0, 1, 2],
+    [0, 1, 2]
 ]
+```
