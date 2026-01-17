@@ -11,7 +11,7 @@ to the chef on how to prepare the dish.
 
 The steps and sequences are explicitly given in the imperative type of paradigm.
 
-Language example: Assambly
+Language example: Assembly
 
 # Declarative:
 Declarative programming expresses the logic of a computation without
