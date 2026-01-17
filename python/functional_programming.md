@@ -1,44 +1,44 @@
-Declarative approch insted of imperative
+## Functional Programming
 
+Declarative approach instead of imperative
 
-Writing a function
+### Writing a function
 
-- must be deterministic
-- free of side effects
-        side effect is when fuction alter sme external variable
-        goal is to minimize not elimiate side effects
+- Must be deterministic
+- Free of side effects
+  - Side effect is when function alters some external variable
+  - Goal is to minimize, not eliminate side effects
 
-example WITH side effects:
+Example **WITH** side effects:
 
-'''
+```python
 ans = 0
 
 def add(x, y):
     ans = x + y
-'''
+```
 
-example WITHOUT side effects:
+Example **WITHOUT** side effects:
 
-'''
+```python
 ans = 0
 
 def add(x, y):
     return x + y
 
 ans = add(x, y)
-'''
+```
 
-- function should always have all parameters passed and should not rely on the global state
-- recursion insted of loops
-- passing functions as arguments to other functions ("functions as first class citizens")
+- Function should always have all parameters passed and should not rely on the global state
+- Recursion instead of loops
+- Passing functions as arguments to other functions ("functions as first class citizens")
 
-'''
+```python
 def add(x, y):
     return x + y
 
 def times3(a, b, function):
-    return 3 * function(a,b)
+    return 3 * function(a, b)
 
-add_times3 = times3(2, 4, add))
-'''
-
+add_times3 = times3(2, 4, add)
+```

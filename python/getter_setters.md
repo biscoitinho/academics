@@ -1,17 +1,19 @@
-Getters and Setters in Python
+## Getters and Setters in Python
+
 To implement proper encapsulation in Python, we need to use setters and getters.
 The primary purpose of using getters and setters in object-oriented programs
 is to ensure data encapsulation. Use the getter method to access data members
 and the setter methods to modify the data members.
 
-In Python, private variables are not hidden fields like in other
-programming languages.
+In Python, private variables are not hidden fields like in other programming languages.
+
 The getters and setters methods are often used when:
+- We want to avoid direct access to private variables
+- To add validation logic for setting a value
 
-When we want to avoid direct access to private variables
-To add validation logic for setting a value
+### Basic example
 
-```
+```python
 class Student:
     def __init__(self, name, age):
         # private member
@@ -37,9 +39,13 @@ stud.set_age(16)
 # retrieving age using getter
 print('Name:', stud.name, stud.get_age())
 ```
+
 Output:
 ```
 Name: Jessa 14
 Name: Jessa 16
 ```
 
+### Better approach: Use @property
+
+See `property_decorator.md` for the modern, Pythonic way to implement getters and setters.

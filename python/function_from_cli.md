@@ -1,15 +1,27 @@
+```python
 def myFunction():
-        ...
+    ...
 
-if __name__ =  '__main__':
-        globals()[sys.argv[1]]()
+if __name__ == '__main__':
+    globals()[sys.argv[1]]()
+```
 
-# => python myscript.py myfunction
+Usage:
+```bash
+python myscript.py myfunction
+```
 
+With arguments:
+```python
 def myfunction(mystring):
-        print(mystring)
+    print(mystring)
 
-if __name__ =  '__main__':
-        globals()[sys.argv[1]](sys.argv[2])
+if __name__ == '__main__':
+    globals()[sys.argv[1]](sys.argv[2])
+```
 
-# => python myscript.py myfunction "hello" => "hello"
+Usage:
+```bash
+python myscript.py myfunction "hello"
+# Output: hello
+```

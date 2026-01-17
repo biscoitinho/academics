@@ -1,12 +1,22 @@
-text ="""
+"""Demonstrates multiline text and ASCII art generation with pyfiglet."""
+
+from __future__ import annotations
+
+import pyfiglet
+
+
+def main() -> None:
+    """Demonstrate multiline strings and ASCII art generation."""
+    multiline_text = """
 multi
 line
       text
 """
+    print(multiline_text)
 
-print(text)
+    ascii_art = pyfiglet.figlet_format("python is awesome", font="cybermedium")
+    print(ascii_art)
 
-import pyfiglet
 
-result = pyfiglet.figlet_format("python is awesome", font = "cybermedium")
-print(result)
+if __name__ == "__main__":
+    main()
