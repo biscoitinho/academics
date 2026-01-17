@@ -1,0 +1,3 @@
+/Users/ciacho/programowanie/academics/c/prices/build/CMakeFiles/prices.dir
+/Users/ciacho/programowanie/academics/c/prices/build/CMakeFiles/edit_cache.dir
+/Users/ciacho/programowanie/academics/c/prices/build/CMakeFiles/rebuild_cache.dir
