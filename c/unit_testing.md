@@ -2,24 +2,13 @@
 
 ## Simple Assert-Based Testing
 
-**math_utils.c**
-```c
-int add(int a, int b) {
-    return a + b;
-}
-
-int multiply(int a, int b) {
-    return a * b;
-}
-```
-
-**test_math_utils.c**
+**test.c**
 ```c
 #include <stdio.h>
 #include <assert.h>
 
-int add(int a, int b);
-int multiply(int a, int b);
+int add(int a, int b) { return a + b; }
+int multiply(int a, int b) { return a * b; }
 
 void test_add() {
     assert(add(2, 3) == 5);
@@ -44,121 +33,7 @@ int main() {
 ```
 
 ```bash
-gcc math_utils.c test_math_utils.c -o test
-./test
-```
-
-## MinUnit (Minimal Framework)
-
-**minunit.h**
-```c
-#ifndef MINUNIT_H
-#define MINUNIT_H
-
-#define mu_assert(message, test) do { \
-    if (!(test)) return message; \
-} while (0)
-
-#define mu_run_test(test) do { \
-    char *message = test(); \
-    tests_run++; \
-    if (message) return message; \
-} while (0)
-
-extern int tests_run;
-
-#endif
-```
-
-**test.c**
-```c
-#include <stdio.h>
-#include "minunit.h"
-
-int tests_run = 0;
-
-int add(int a, int b) { return a + b; }
-
-static char* test_add() {
-    mu_assert("error: add(2,3) != 5", add(2, 3) == 5);
-    mu_assert("error: add(-1,1) != 0", add(-1, 1) == 0);
-    return 0;
-}
-
-static char* test_multiply() {
-    mu_assert("error: 2*3 != 6", 2 * 3 == 6);
-    return 0;
-}
-
-static char* all_tests() {
-    mu_run_test(test_add);
-    mu_run_test(test_multiply);
-    return 0;
-}
-
-int main() {
-    char *result = all_tests();
-    if (result != 0) {
-        printf("%s\n", result);
-    } else {
-        printf("ALL TESTS PASSED\n");
-    }
-    printf("Tests run: %d\n", tests_run);
-    return result != 0;
-}
-```
-
-## Unity Test Framework
-
-**Installation:**
-```bash
-git clone https://github.com/ThrowTheSwitch/Unity.git
-```
-
-**test_runner.c**
-```c
-#include "unity.h"
-
-// Function to test
-int add(int a, int b) {
-    return a + b;
-}
-
-// Setup runs before each test
-void setUp(void) {
-    // Initialize test
-}
-
-// Teardown runs after each test
-void tearDown(void) {
-    // Clean up
-}
-
-// Test cases
-void test_add_positive_numbers(void) {
-    TEST_ASSERT_EQUAL(5, add(2, 3));
-}
-
-void test_add_negative_numbers(void) {
-    TEST_ASSERT_EQUAL(-5, add(-2, -3));
-}
-
-void test_add_zero(void) {
-    TEST_ASSERT_EQUAL(0, add(0, 0));
-}
-
-int main(void) {
-    UNITY_BEGIN();
-    RUN_TEST(test_add_positive_numbers);
-    RUN_TEST(test_add_negative_numbers);
-    RUN_TEST(test_add_zero);
-    return UNITY_END();
-}
-```
-
-**Compile:**
-```bash
-gcc test_runner.c Unity/src/unity.c -I Unity/src -o test
+gcc test.c -o test
 ./test
 ```
 
@@ -197,15 +72,14 @@ static int tests_failed = 0;
 } while(0)
 
 #define TEST_SUMMARY() do { \
-    printf("\n\nTests passed: %d\n", tests_passed); \
-    printf("Tests failed: %d\n", tests_failed); \
-    printf("Total: %d\n", tests_passed + tests_failed); \
+    printf("\n\nPassed: %d, Failed: %d, Total: %d\n", \
+           tests_passed, tests_failed, tests_passed + tests_failed); \
 } while(0)
 
 #endif
 ```
 
-**test_example.c**
+**test.c**
 ```c
 #include "test_framework.h"
 
@@ -233,33 +107,69 @@ int main() {
 }
 ```
 
+## Unity Test Framework
+
+**Installation:**
+```bash
+git clone https://github.com/ThrowTheSwitch/Unity.git
+```
+
+**test_runner.c**
+```c
+#include "unity.h"
+
+int add(int a, int b) { return a + b; }
+
+void setUp(void) {
+    // Runs before each test
+}
+
+void tearDown(void) {
+    // Runs after each test
+}
+
+void test_add_positive() {
+    TEST_ASSERT_EQUAL(5, add(2, 3));
+}
+
+void test_add_negative() {
+    TEST_ASSERT_EQUAL(-5, add(-2, -3));
+}
+
+void test_add_zero() {
+    TEST_ASSERT_EQUAL(0, add(0, 0));
+}
+
+int main(void) {
+    UNITY_BEGIN();
+    RUN_TEST(test_add_positive);
+    RUN_TEST(test_add_negative);
+    RUN_TEST(test_add_zero);
+    return UNITY_END();
+}
+```
+
+**Compile:**
+```bash
+gcc test_runner.c Unity/src/unity.c -I Unity/src -o test
+./test
+```
+
 ## Testing with Mocks
 
-**database.h**
 ```c
+// database.h
 typedef struct {
     int (*get_user)(int id);
 } Database;
 
-int get_user_age(Database *db, int user_id);
-```
-
-**database.c**
-```c
-#include "database.h"
-
 int get_user_age(Database *db, int user_id) {
     return db->get_user(user_id);
 }
-```
 
-**test_database.c**
-```c
-#include <stdio.h>
+// test.c
 #include <assert.h>
-#include "database.h"
 
-// Mock function
 int mock_get_user(int id) {
     if (id == 1) return 25;
     if (id == 2) return 30;
@@ -275,39 +185,6 @@ void test_get_user_age() {
 
     printf("test_get_user_age: PASSED\n");
 }
-
-int main() {
-    test_get_user_age();
-    return 0;
-}
-```
-
-## Testing Memory Leaks (Valgrind)
-
-**program.c**
-```c
-#include <stdlib.h>
-
-int* create_array(int size) {
-    return malloc(size * sizeof(int));
-}
-
-int main() {
-    int *arr = create_array(10);
-    // ... use array ...
-    free(arr);  // Don't forget!
-    return 0;
-}
-```
-
-```bash
-# Compile with debug symbols
-gcc -g program.c -o program
-
-# Run with valgrind
-valgrind --leak-check=full ./program
-
-# Output shows memory leaks if any
 ```
 
 ## Test Organization
@@ -332,11 +209,9 @@ project/
 CC = gcc
 CFLAGS = -Wall -I include
 
-# Source files
 SRC = src/math_utils.c src/string_utils.c
 OBJ = $(SRC:.c=.o)
 
-# Test files
 TEST_SRC = tests/test_all.c
 TEST_OBJ = $(TEST_SRC:.c=.o)
 
@@ -355,6 +230,33 @@ clean:
 .PHONY: all test clean
 ```
 
+## Memory Leak Testing (Valgrind)
+
+```c
+#include <stdlib.h>
+
+int* create_array(int size) {
+    return malloc(size * sizeof(int));
+}
+
+int main() {
+    int *arr = create_array(10);
+    // ... use array ...
+    free(arr);
+    return 0;
+}
+```
+
+```bash
+# Compile with debug symbols
+gcc -g program.c -o program
+
+# Run with valgrind
+valgrind --leak-check=full ./program
+
+# Output shows memory leaks if any
+```
+
 ## Code Coverage (gcov)
 
 ```bash
@@ -371,41 +273,12 @@ gcov program.c
 cat program.c.gcov
 ```
 
-## Assertions
-
-```c
-#include <assert.h>
-
-void test_assertions() {
-    // Simple assertion
-    assert(1 + 1 == 2);
-
-    // String comparison
-    char *str = "hello";
-    assert(strcmp(str, "hello") == 0);
-
-    // Pointer checks
-    int *ptr = malloc(sizeof(int));
-    assert(ptr != NULL);
-    free(ptr);
-
-    // Array checks
-    int arr[3] = {1, 2, 3};
-    assert(arr[0] == 1);
-    assert(sizeof(arr)/sizeof(arr[0]) == 3);
-}
-```
-
-## Testing Best Practices
+## Test Best Practices
 
 ```c
 // 1. Test one thing per test
 void test_add_positive() {
     assert(add(2, 3) == 5);
-}
-
-void test_add_negative() {
-    assert(add(-2, -3) == -5);
 }
 
 // 2. Use descriptive names
@@ -415,23 +288,22 @@ void test_empty_string_returns_zero_length() {
 
 // 3. Test edge cases
 void test_division_by_zero() {
-    // Test how function handles error
-    assert(safe_divide(10, 0) == -1);  // Returns error code
+    assert(safe_divide(10, 0) == -1);
 }
 
 // 4. Setup and teardown
-void setup_test() {
+void setup() {
     // Allocate resources
 }
 
-void teardown_test() {
+void teardown() {
     // Free resources
 }
 
 void test_with_cleanup() {
-    setup_test();
+    setup();
     // ... test code ...
-    teardown_test();
+    teardown();
 }
 ```
 
@@ -503,4 +375,25 @@ int main() {
     printf("All tests passed!\n");
     return 0;
 }
+```
+
+## Common Test Assertions
+
+```c
+// Equality
+assert(actual == expected);
+assert(strcmp(str1, str2) == 0);
+
+// Truthiness
+assert(condition);
+assert(ptr != NULL);
+
+// Ranges
+assert(value > 0);
+assert(value >= min && value <= max);
+
+// Arrays
+int arr1[] = {1, 2, 3};
+int arr2[] = {1, 2, 3};
+assert(memcmp(arr1, arr2, sizeof(arr1)) == 0);
 ```

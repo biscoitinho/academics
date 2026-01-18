@@ -9,12 +9,10 @@
 
 // Function declarations
 int add(int a, int b);
-int subtract(int a, int b);
 double average(int *arr, int size);
 
 // Constants
 #define PI 3.14159
-#define MAX_SIZE 100
 
 // Type definitions
 typedef struct {
@@ -22,7 +20,7 @@ typedef struct {
     int y;
 } Point;
 
-#endif  // MATH_UTILS_H
+#endif
 ```
 
 **math_utils.c**
@@ -31,10 +29,6 @@ typedef struct {
 
 int add(int a, int b) {
     return a + b;
-}
-
-int subtract(int a, int b) {
-    return a - b;
 }
 
 double average(int *arr, int size) {
@@ -69,23 +63,21 @@ int main() {
 #ifndef HEADER_NAME_H
 #define HEADER_NAME_H
 
-// Header content here
+// Header content
 
-#endif  // HEADER_NAME_H
+#endif
 
 // Alternative (non-standard but widely supported)
 #pragma once
-
-// Header content
 ```
 
 ## System vs User Headers
 
 ```c
 #include <stdio.h>      // System header (standard library)
-#include <stdlib.h>     // Search in system directories
+#include <stdlib.h>     // Search in system paths
 
-#include "myheader.h"   // User header (same directory)
+#include "myheader.h"   // User header (current directory)
 #include "lib/util.h"   // User header (relative path)
 ```
 
@@ -126,40 +118,18 @@ int main() {
 
 ## Static Functions
 
-**utils.c**
 ```c
+// utils.c
+
 // Static = internal to this file only
-static int helper_function(int x) {
+static int helper(int x) {
     return x * 2;
 }
 
 // Public function
-int public_function(int x) {
-    return helper_function(x) + 1;
+int public_func(int x) {
+    return helper(x) + 1;
 }
-```
-
-## Project Structure
-
-```
-project/
-├── include/
-│   ├── math_utils.h
-│   └── string_utils.h
-├── src/
-│   ├── math_utils.c
-│   ├── string_utils.c
-│   └── main.c
-├── Makefile
-└── README.md
-```
-
-**Compile:**
-```bash
-gcc -I include -c src/math_utils.c -o math_utils.o
-gcc -I include -c src/string_utils.c -o string_utils.o
-gcc -I include -c src/main.c -o main.o
-gcc math_utils.o string_utils.o main.o -o program
 ```
 
 ## Inline Functions
@@ -169,7 +139,6 @@ gcc math_utils.o string_utils.o main.o -o program
 #ifndef UTILS_H
 #define UTILS_H
 
-// Inline function (small, frequently used)
 static inline int max(int a, int b) {
     return (a > b) ? a : b;
 }
@@ -193,22 +162,22 @@ struct Node {
 };
 
 // Forward declare function
-void process_data(int *data, int size);
+void process(int *data, int size);
 
 int main() {
     int arr[] = {1, 2, 3};
-    process_data(arr, 3);
+    process(arr, 3);
     return 0;
 }
 
-void process_data(int *data, int size) {
+void process(int *data, int size) {
     // Implementation
 }
 ```
 
 ## Library Example
 
-**mylib/list.h**
+**list.h**
 ```c
 #ifndef LIST_H
 #define LIST_H
@@ -226,14 +195,12 @@ typedef struct {
 List* list_create(void);
 void list_append(List *list, int value);
 void list_free(List *list);
-void list_print(List *list);
 
 #endif
 ```
 
-**mylib/list.c**
+**list.c**
 ```c
-#include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
 
@@ -249,13 +216,11 @@ void list_append(List *list, int value) {
     node->value = value;
     node->next = NULL;
 
-    if (list->head == NULL) {
+    if (!list->head) {
         list->head = node;
     } else {
         Node *curr = list->head;
-        while (curr->next) {
-            curr = curr->next;
-        }
+        while (curr->next) curr = curr->next;
         curr->next = node;
     }
     list->size++;
@@ -269,61 +234,6 @@ void list_free(List *list) {
         free(temp);
     }
     free(list);
-}
-
-void list_print(List *list) {
-    Node *curr = list->head;
-    while (curr) {
-        printf("%d -> ", curr->value);
-        curr = curr->next;
-    }
-    printf("NULL\n");
-}
-```
-
-**main.c**
-```c
-#include "mylib/list.h"
-
-int main() {
-    List *list = list_create();
-    list_append(list, 10);
-    list_append(list, 20);
-    list_append(list, 30);
-    list_print(list);
-    list_free(list);
-    return 0;
-}
-```
-
-## Conditional Compilation
-
-**config.h**
-```c
-#ifndef CONFIG_H
-#define CONFIG_H
-
-#define DEBUG 1
-#define VERSION "1.0.0"
-
-#ifdef DEBUG
-    #define LOG(msg) printf("[DEBUG] %s\n", msg)
-#else
-    #define LOG(msg)  // No-op in release
-#endif
-
-#endif
-```
-
-**main.c**
-```c
-#include <stdio.h>
-#include "config.h"
-
-int main() {
-    LOG("Program started");  // Only prints if DEBUG is defined
-    printf("Version: %s\n", VERSION);
-    return 0;
 }
 ```
 
@@ -349,7 +259,7 @@ void list_add(List *list, int value);
 #include "list.h"
 #include <stdlib.h>
 
-// Actual implementation (hidden from users)
+// Actual implementation (hidden)
 struct List {
     int *data;
     int size;
@@ -388,16 +298,13 @@ int global_var = 0;  // Error! Multiple definition if included twice
 // CORRECT: Declare in header, define in .c
 // myheader.h
 extern int global_var;
-
 // myheader.c
 int global_var = 0;
 
 
 // WRONG: Missing include guard
 // myheader.h
-void function();
-
-// If included twice, redefinition error!
+void function();  // Redefinition error if included twice
 
 // CORRECT: Use include guard
 #ifndef MYHEADER_H
@@ -412,17 +319,16 @@ int add(int a, int b) {
     return a + b;
 }
 
-// CORRECT: Only declaration
+// CORRECT: Only declaration in header
 // utils.h
 int add(int a, int b);
-
 // utils.c
 int add(int a, int b) {
     return a + b;
 }
 ```
 
-## Compilation Commands
+## Compilation
 
 ```bash
 # Compile to object files
@@ -449,4 +355,27 @@ gcc -shared -fPIC utils.c -o libmylib.so
 
 # Link with shared library
 gcc main.c -L. -lmylib -o program
+```
+
+## Project Structure
+
+```
+project/
+├── include/
+│   ├── math_utils.h
+│   └── string_utils.h
+├── src/
+│   ├── math_utils.c
+│   ├── string_utils.c
+│   └── main.c
+├── Makefile
+└── README.md
+```
+
+**Compile:**
+```bash
+gcc -I include -c src/math_utils.c -o math_utils.o
+gcc -I include -c src/string_utils.c -o string_utils.o
+gcc -I include -c src/main.c -o main.o
+gcc math_utils.o string_utils.o main.o -o program
 ```
