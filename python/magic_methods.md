@@ -1,197 +1,134 @@
-## Magic Methods (Dunder Methods)
+## Magic Methods
 
-Special methods with double underscores that define behavior for built-in operations.
+Special methods that start and end with double underscores (`__`).
 
-### String representation
+### Basic
 
 ```python
-class Book:
-    def __init__(self, title, author):
-        self.title = title
-        self.author = author
-    
-    def __str__(self):
-        """For print() and str() - user-friendly."""
-        return f"{self.title} by {self.author}"
-    
+class MyClass:
+    def __init__(self, value):
+        self.value = value
+
     def __repr__(self):
-        """For repr() and debugging - unambiguous."""
-        return f"Book('{self.title}', '{self.author}')"
+        return f"MyClass({self.value})"
 
-book = Book("1984", "George Orwell")
-print(book)        # Uses __str__: 1984 by George Orwell
-print(repr(book))  # Uses __repr__: Book('1984', 'George Orwell')
+    def __str__(self):
+        return f"Value: {self.value}"
+
+obj = MyClass(42)
+print(repr(obj))  # MyClass(42)
+print(str(obj))   # Value: 42
 ```
 
-### Comparison operators
+### Comparison
 
 ```python
-class Person:
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-    
+class Number:
+    def __init__(self, n):
+        self.n = n
+
     def __eq__(self, other):
-        """Equal =="""
-        return self.age == other.age
-    
+        return self.n == other.n
+
     def __lt__(self, other):
-        """Less than <"""
-        return self.age < other.age
-    
+        return self.n < other.n
+
     def __le__(self, other):
-        """Less than or equal <="""
-        return self.age <= other.age
-    
-    def __gt__(self, other):
-        """Greater than >"""
-        return self.age > other.age
+        return self.n <= other.n
 
-alice = Person("Alice", 30)
-bob = Person("Bob", 25)
-
-print(alice > bob)   # True
-print(alice == bob)  # False
+# __gt__, __ge__, __ne__ work similarly
 ```
 
-### Arithmetic operators
+### Arithmetic
 
 ```python
 class Vector:
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-    
-    def __add__(self, other):
-        """Addition +"""
-        return Vector(self.x + other.x, self.y + other.y)
-    
-    def __sub__(self, other):
-        """Subtraction -"""
-        return Vector(self.x - other.x, self.y - other.y)
-    
-    def __mul__(self, scalar):
-        """Multiplication *"""
-        return Vector(self.x * scalar, self.y * scalar)
-    
-    def __str__(self):
-        return f"Vector({self.x}, {self.y})"
+        self.x, self.y = x, y
 
-v1 = Vector(1, 2)
-v2 = Vector(3, 4)
-print(v1 + v2)  # Vector(4, 6)
-print(v1 * 3)   # Vector(3, 6)
+    def __add__(self, other):
+        return Vector(self.x + other.x, self.y + other.y)
+
+    def __mul__(self, scalar):
+        return Vector(self.x * scalar, self.y * scalar)
+
+# __sub__, __truediv__, __floordiv__, __mod__, __pow__
 ```
 
-### Container methods
+### Container
 
 ```python
-class Playlist:
-    def __init__(self):
-        self.songs = []
-    
+class MyList:
+    def __init__(self, items):
+        self.items = items
+
     def __len__(self):
-        """len() function"""
-        return len(self.songs)
-    
+        return len(self.items)
+
     def __getitem__(self, index):
-        """Indexing playlist[0]"""
-        return self.songs[index]
-    
+        return self.items[index]
+
     def __setitem__(self, index, value):
-        """Assignment playlist[0] = 'song'"""
-        self.songs[index] = value
-    
+        self.items[index] = value
+
     def __contains__(self, item):
-        """'in' operator"""
-        return item in self.songs
-    
-    def __iter__(self):
-        """Make iterable"""
-        return iter(self.songs)
+        return item in self.items
 
-playlist = Playlist()
-playlist.songs = ["Song1", "Song2", "Song3"]
-
-print(len(playlist))           # 3
-print(playlist[0])             # Song1
-print("Song2" in playlist)     # True
-
-for song in playlist:
-    print(song)
+lst = MyList([1, 2, 3])
+len(lst)      # 3
+lst[0]        # 1
+2 in lst      # True
 ```
 
-### Callable objects
+### Context Manager
+
+```python
+class File:
+    def __init__(self, filename):
+        self.filename = filename
+
+    def __enter__(self):
+        self.file = open(self.filename, 'r')
+        return self.file
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.file.close()
+
+with File("data.txt") as f:
+    content = f.read()
+```
+
+### Callable
 
 ```python
 class Multiplier:
     def __init__(self, factor):
         self.factor = factor
-    
+
     def __call__(self, x):
-        """Makes instance callable like a function."""
         return x * self.factor
 
-times_three = Multiplier(3)
-print(times_three(5))  # 15
-print(times_three(10)) # 30
+double = Multiplier(2)
+double(5)  # 10
 ```
 
-### Context manager
+### Common Magic Methods
 
 ```python
-class DatabaseConnection:
-    def __enter__(self):
-        """Called when entering 'with' block."""
-        print("Opening connection")
-        return self
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Called when exiting 'with' block."""
-        print("Closing connection")
-        return False
-
-with DatabaseConnection() as db:
-    print("Using database")
+__init__        # Constructor
+__repr__        # Official string representation
+__str__         # Informal string representation
+__len__         # len(obj)
+__getitem__     # obj[key]
+__setitem__     # obj[key] = value
+__contains__    # key in obj
+__iter__        # for item in obj
+__next__        # next(iterator)
+__call__        # obj()
+__enter__       # with obj
+__exit__        # with obj (cleanup)
+__eq__          # ==
+__lt__          # <
+__add__         # +
+__mul__         # *
 ```
-
-### Common magic methods
-
-**Initialization:**
-- `__init__`: Constructor
-- `__new__`: Create instance (before __init__)
-- `__del__`: Destructor
-
-**Representation:**
-- `__str__`: str() and print()
-- `__repr__`: repr() and interactive console
-
-**Comparison:**
-- `__eq__`: ==
-- `__ne__`: !=
-- `__lt__`: <
-- `__le__`: <=
-- `__gt__`: >
-- `__ge__`: >=
-
-**Arithmetic:**
-- `__add__`: +
-- `__sub__`: -
-- `__mul__`: *
-- `__truediv__`: /
-- `__floordiv__`: //
-- `__mod__`: %
-- `__pow__`: **
-
-**Container:**
-- `__len__`: len()
-- `__getitem__`: obj[key]
-- `__setitem__`: obj[key] = value
-- `__delitem__`: del obj[key]
-- `__contains__`: in operator
-- `__iter__`: for loops
-
-**Other:**
-- `__call__`: obj()
-- `__bool__`: bool()
-- `__hash__`: hash()

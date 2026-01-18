@@ -1,254 +1,99 @@
-## Useful Built-in Functions
+## Built-in Functions
 
-Python's most commonly used built-in functions.
-
-### enumerate()
-
-Get index and value while iterating.
+### Iterables
 
 ```python
-fruits = ['apple', 'banana', 'cherry']
-
-# Without enumerate
-for i in range(len(fruits)):
-    print(i, fruits[i])
-
-# With enumerate - better
-for i, fruit in enumerate(fruits):
-    print(i, fruit)
-
-# Start from different index
-for i, fruit in enumerate(fruits, start=1):
-    print(i, fruit)  # 1 apple, 2 banana, 3 cherry
+len([1, 2, 3])              # 3
+sum([1, 2, 3])              # 6
+min([1, 2, 3])              # 1
+max([1, 2, 3])              # 3
+sorted([3, 1, 2])           # [1, 2, 3]
+reversed([1, 2, 3])         # iterator
 ```
 
-### zip()
-
-Combine multiple iterables together.
+### map/filter/zip
 
 ```python
-names = ['Alice', 'Bob', 'Charlie']
-ages = [25, 30, 35]
-cities = ['NYC', 'LA', 'Chicago']
+# map - apply function to each item
+list(map(lambda x: x**2, [1, 2, 3]))  # [1, 4, 9]
 
-# Zip them together
-for name, age, city in zip(names, ages, cities):
-    print(f"{name}, {age}, from {city}")
+# filter - keep items where function returns True
+list(filter(lambda x: x % 2 == 0, [1, 2, 3, 4]))  # [2, 4]
 
-# Create dict from two lists
-person_dict = dict(zip(names, ages))
-print(person_dict)  # {'Alice': 25, 'Bob': 30, 'Charlie': 35}
-
-# Unzip using zip with *
-pairs = [(1, 'a'), (2, 'b'), (3, 'c')]
-numbers, letters = zip(*pairs)
-print(numbers)  # (1, 2, 3)
-print(letters)  # ('a', 'b', 'c')
+# zip - combine iterables
+list(zip([1, 2], ['a', 'b']))  # [(1, 'a'), (2, 'b')]
 ```
 
-### any() and all()
-
-Check if any or all elements are truthy.
+### enumerate/range
 
 ```python
-numbers = [0, 1, 2, 3]
+# enumerate - index and value
+for i, val in enumerate(['a', 'b', 'c']):
+    print(i, val)  # 0 a, 1 b, 2 c
 
-# any() - True if at least one is truthy
-print(any(numbers))  # True
-
-# all() - True only if all are truthy
-print(all(numbers))  # False (because of 0)
-
-numbers = [1, 2, 3]
-print(all(numbers))  # True
-
-# Check if any number is even
-print(any(n % 2 == 0 for n in numbers))
-
-# Check if all numbers are positive
-print(all(n > 0 for n in numbers))
+# range
+range(5)           # 0, 1, 2, 3, 4
+range(1, 5)        # 1, 2, 3, 4
+range(0, 10, 2)    # 0, 2, 4, 6, 8
 ```
 
-### sorted()
-
-Return sorted version without modifying original.
+### any/all
 
 ```python
-numbers = [3, 1, 4, 1, 5, 9, 2]
-
-# Sort ascending
-sorted_nums = sorted(numbers)
-print(sorted_nums)  # [1, 1, 2, 3, 4, 5, 9]
-
-# Sort descending
-sorted_desc = sorted(numbers, reverse=True)
-print(sorted_desc)  # [9, 5, 4, 3, 2, 1, 1]
-
-# Sort by custom key
-words = ['banana', 'pie', 'Washington', 'book']
-sorted_words = sorted(words, key=len)
-print(sorted_words)  # ['pie', 'book', 'banana', 'Washington']
-
-# Sort ignoring case
-sorted_words = sorted(words, key=str.lower)
-print(sorted_words)  # ['banana', 'book', 'pie', 'Washington']
+any([False, True, False])   # True (at least one True)
+all([True, True, False])    # False (not all True)
 ```
 
-### reversed()
-
-Reverse an iterable.
+### Type Functions
 
 ```python
-numbers = [1, 2, 3, 4, 5]
-
-# Returns an iterator
-for n in reversed(numbers):
-    print(n)  # 5, 4, 3, 2, 1
-
-# Convert to list
-reversed_list = list(reversed(numbers))
+type(42)                    # <class 'int'>
+isinstance(42, int)         # True
+callable(print)             # True
 ```
 
-### range()
-
-Generate sequence of numbers.
+### String Functions
 
 ```python
-# range(stop)
-for i in range(5):
-    print(i)  # 0, 1, 2, 3, 4
-
-# range(start, stop)
-for i in range(2, 5):
-    print(i)  # 2, 3, 4
-
-# range(start, stop, step)
-for i in range(0, 10, 2):
-    print(i)  # 0, 2, 4, 6, 8
-
-# Reverse range
-for i in range(5, 0, -1):
-    print(i)  # 5, 4, 3, 2, 1
-
-# Convert to list
-numbers = list(range(5))
-print(numbers)  # [0, 1, 2, 3, 4]
+chr(65)                     # 'A' (int to char)
+ord('A')                    # 65 (char to int)
+ascii('é')                  # "'\xe9'"
 ```
 
-### sum(), min(), max()
-
-Aggregate functions.
+### Math Functions
 
 ```python
-numbers = [1, 2, 3, 4, 5]
-
-print(sum(numbers))    # 15
-print(min(numbers))    # 1
-print(max(numbers))    # 5
-
-# sum() with start value
-print(sum(numbers, 10))  # 25
-
-# min/max with key
-words = ['a', 'abc', 'ab']
-print(max(words, key=len))  # 'abc'
+abs(-5)                     # 5
+round(3.7)                  # 4
+round(3.14159, 2)           # 3.14
+pow(2, 3)                   # 8 (same as 2**3)
+divmod(10, 3)               # (3, 1) - quotient and remainder
 ```
 
-### isinstance() and type()
-
-Check object types.
+### Other Useful Functions
 
 ```python
-# isinstance() - recommended
-x = 5
-print(isinstance(x, int))     # True
-print(isinstance(x, (int, float)))  # True (either)
+# Input/Output
+input("Enter name: ")
+print("Hello", "World", sep=", ")
 
-# type()
-print(type(x))                # <class 'int'>
-print(type(x) == int)         # True
-```
+# Object functions
+dir(obj)                    # List object attributes
+vars(obj)                   # Object's __dict__
+id(obj)                     # Object's memory address
+hash(obj)                   # Object's hash value
 
-### len()
+# Conversion
+bin(10)                     # '0b1010'
+hex(255)                    # '0xff'
+oct(8)                      # '0o10'
 
-Get length of sequences.
+# Iteration
+iter([1, 2, 3])            # Iterator object
+next(iterator)             # Next value from iterator
 
-```python
-print(len([1, 2, 3]))       # 3
-print(len("hello"))          # 5
-print(len({'a': 1, 'b': 2})) # 2
-```
-
-### map()
-
-Apply function to all items.
-
-```python
-numbers = [1, 2, 3, 4, 5]
-
-# Square all numbers
-squared = map(lambda x: x**2, numbers)
-print(list(squared))  # [1, 4, 9, 16, 25]
-
-# Convert strings to ints
-strings = ['1', '2', '3']
-integers = list(map(int, strings))
-print(integers)  # [1, 2, 3]
-
-# Map with multiple iterables
-a = [1, 2, 3]
-b = [4, 5, 6]
-result = map(lambda x, y: x + y, a, b)
-print(list(result))  # [5, 7, 9]
-```
-
-### filter()
-
-Filter items based on condition.
-
-```python
-numbers = [1, 2, 3, 4, 5, 6]
-
-# Get even numbers
-evens = filter(lambda x: x % 2 == 0, numbers)
-print(list(evens))  # [2, 4, 6]
-
-# Filter None values
-values = [1, None, 2, None, 3]
-filtered = filter(None, values)
-print(list(filtered))  # [1, 2, 3]
-```
-
-### abs(), round(), pow()
-
-Math functions.
-
-```python
-print(abs(-5))           # 5
-print(round(3.14159, 2)) # 3.14
-print(pow(2, 3))         # 8 (2^3)
-```
-
-### input()
-
-Get user input.
-
-```python
-name = input("Enter your name: ")
-print(f"Hello, {name}!")
-
-# Convert to int
-age = int(input("Enter your age: "))
-```
-
-### dir() and help()
-
-Inspect objects.
-
-```python
-# List all attributes/methods
-print(dir([]))
-
-# Get help about object
-help(list)
+# Advanced
+eval("2 + 2")              # 4 (evaluate string as code)
+exec("x = 5")              # Execute code
+compile(source, '', 'exec')  # Compile code
 ```

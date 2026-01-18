@@ -1,76 +1,23 @@
 ## Alembic - Database Migrations
 
-Alembic is a database migration tool for SQLAlchemy. It allows you to manage database schema changes over time.
+Database migration tool for SQLAlchemy to manage schema changes.
 
-### Installation
-
-```bash
-pip install alembic
-pip install sqlalchemy  # Required dependency
-```
-
-### Initialize Alembic
+### Setup
 
 ```bash
-# In your project directory
+pip install alembic sqlalchemy
+
+# Initialize
 alembic init alembic
-
-# This creates:
-# alembic/
-#   env.py           # Migration environment
-#   script.py.mako   # Migration template
-#   versions/        # Migration files
-# alembic.ini        # Configuration file
 ```
 
 ### Configuration
 
 ```python
-# alembic.ini - Set database URL
+# alembic.ini
 sqlalchemy.url = postgresql://user:password@localhost/dbname
 
-# Or use environment variable (better for production)
-# sqlalchemy.url =
-
-# Then in alembic/env.py
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-config.set_main_option('sqlalchemy.url', os.getenv('DATABASE_URL'))
-```
-
-### Define Your Models
-
-```python
-# models.py
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
-
-Base = declarative_base()
-
-class User(Base):
-    __tablename__ = 'users'
-
-    id = Column(Integer, primary_key=True)
-    username = Column(String(50), unique=True, nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-class Post(Base):
-    __tablename__ = 'posts'
-
-    id = Column(Integer, primary_key=True)
-    title = Column(String(200), nullable=False)
-    content = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'))
-```
-
-### Link Models to Alembic
-
-```python
-# alembic/env.py - Add this near the top
+# alembic/env.py - Link models
 from models import Base
 target_metadata = Base.metadata
 ```
@@ -78,276 +25,108 @@ target_metadata = Base.metadata
 ### Create Migration
 
 ```bash
-# Auto-generate migration from model changes
-alembic revision --autogenerate -m "create users and posts tables"
+# Auto-generate from model changes
+alembic revision --autogenerate -m "create users table"
 
-# This creates: alembic/versions/xxxx_create_users_and_posts_tables.py
+# Manual migration
+alembic revision -m "add column"
 ```
 
-### Migration File Example
+### Migration File
 
 ```python
-# alembic/versions/xxxx_create_users_table.py
-"""create users table
-
-Revision ID: abc123
-Revises:
-Create Date: 2024-01-15 10:00:00
-"""
+"""create users table"""
 from alembic import op
 import sqlalchemy as sa
 
-# revision identifiers
 revision = 'abc123'
 down_revision = None
-branch_labels = None
-depends_on = None
 
 def upgrade():
     op.create_table(
         'users',
         sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('username', sa.String(50), nullable=False),
-        sa.Column('email', sa.String(100), nullable=False),
-        sa.Column('created_at', sa.DateTime(), nullable=True)
+        sa.Column('email', sa.String(100), nullable=False)
     )
-    op.create_index('ix_users_email', 'users', ['email'], unique=True)
 
 def downgrade():
-    op.drop_index('ix_users_email', table_name='users')
     op.drop_table('users')
 ```
 
 ### Apply Migrations
 
 ```bash
-# Upgrade to latest version
-alembic upgrade head
-
-# Upgrade by 1 version
-alembic upgrade +1
-
-# Downgrade by 1 version
-alembic downgrade -1
-
-# Downgrade to specific revision
-alembic downgrade abc123
-
-# Show current version
-alembic current
-
-# Show migration history
-alembic history
+alembic upgrade head        # Latest
+alembic upgrade +1          # Next one
+alembic downgrade -1        # Previous
+alembic current             # Show current
+alembic history             # List all
 ```
 
 ### Common Operations
 
-#### Add Column
-
-```bash
-alembic revision -m "add age to users"
-```
-
 ```python
+# Add column
 def upgrade():
-    op.add_column('users', sa.Column('age', sa.Integer(), nullable=True))
+    op.add_column('users', sa.Column('age', sa.Integer()))
 
-def downgrade():
-    op.drop_column('users', 'age')
-```
-
-#### Modify Column
-
-```python
-def upgrade():
-    op.alter_column('users', 'email',
-                    existing_type=sa.String(100),
-                    type_=sa.String(200),
-                    nullable=False)
-
-def downgrade():
-    op.alter_column('users', 'email',
-                    existing_type=sa.String(200),
-                    type_=sa.String(100),
-                    nullable=False)
-```
-
-#### Drop Column
-
-```python
+# Drop column
 def upgrade():
     op.drop_column('users', 'age')
 
-def downgrade():
-    op.add_column('users', sa.Column('age', sa.Integer(), nullable=True))
-```
-
-#### Create Index
-
-```python
+# Modify column
 def upgrade():
-    op.create_index('ix_users_username', 'users', ['username'], unique=True)
+    op.alter_column('users', 'email', type_=sa.String(200))
 
-def downgrade():
-    op.drop_index('ix_users_username', table_name='users')
-```
-
-#### Add Foreign Key
-
-```python
+# Add index
 def upgrade():
-    op.create_foreign_key(
-        'fk_posts_user_id',
-        'posts', 'users',
-        ['user_id'], ['id']
-    )
+    op.create_index('ix_users_email', 'users', ['email'])
 
-def downgrade():
-    op.drop_constraint('fk_posts_user_id', 'posts', type_='foreignkey')
-```
-
-#### Bulk Insert Data
-
-```python
-from alembic import op
-from sqlalchemy import table, column, Integer, String
-
+# Add foreign key
 def upgrade():
-    users_table = table('users',
-        column('id', Integer),
-        column('username', String),
-        column('email', String)
-    )
+    op.create_foreign_key('fk_posts_user', 'posts', 'users', ['user_id'], ['id'])
 
-    op.bulk_insert(users_table, [
-        {'username': 'admin', 'email': 'admin@example.com'},
-        {'username': 'user1', 'email': 'user1@example.com'}
+# Insert data
+def upgrade():
+    from sqlalchemy import table, column
+    users = table('users', column('username'), column('email'))
+    op.bulk_insert(users, [
+        {'username': 'admin', 'email': 'admin@example.com'}
     ])
-
-def downgrade():
-    op.execute("DELETE FROM users WHERE username IN ('admin', 'user1')")
 ```
-
-### Manual Migration (no autogenerate)
-
-```bash
-alembic revision -m "add custom change"
-```
-
-```python
-def upgrade():
-    # Write your own SQL or use op commands
-    op.execute("UPDATE users SET active = true WHERE created_at < '2024-01-01'")
-
-def downgrade():
-    op.execute("UPDATE users SET active = false WHERE created_at < '2024-01-01'")
-```
-
-### Common Commands
-
-```bash
-# Create new migration
-alembic revision -m "description"
-alembic revision --autogenerate -m "description"
-
-# Apply migrations
-alembic upgrade head              # Latest
-alembic upgrade +1                # Next one
-alembic upgrade abc123            # Specific revision
-
-# Revert migrations
-alembic downgrade -1              # Previous one
-alembic downgrade abc123          # Specific revision
-alembic downgrade base            # Revert all
-
-# Information
-alembic current                   # Current revision
-alembic history                   # All revisions
-alembic show abc123               # Show specific revision
-```
-
-### Best Practices
-
-1. **Always review autogenerated migrations** - They may miss complex changes
-2. **Test migrations** - Run upgrade/downgrade before committing
-3. **Use version control** - Commit migration files
-4. **Write both upgrade and downgrade** - Always reversible
-5. **One logical change per migration** - Easier to debug
-6. **Add meaningful messages** - Describe what changed
-7. **Don't modify existing migrations** - Create new ones instead
-8. **Backup database before production migrations**
 
 ### Production Workflow
 
 ```bash
-# 1. Create migration locally
-alembic revision --autogenerate -m "add user status field"
+# 1. Create migration
+alembic revision --autogenerate -m "add status field"
 
-# 2. Review the migration file
-cat alembic/versions/xxxx_add_user_status_field.py
+# 2. Review generated file
+cat alembic/versions/xxxx_add_status_field.py
 
 # 3. Test locally
 alembic upgrade head
 alembic downgrade -1
 alembic upgrade head
 
-# 4. Commit to version control
-git add alembic/versions/xxxx_add_user_status_field.py
-git commit -m "Add user status field migration"
-
-# 5. Deploy to production
-git pull
+# 4. Deploy
+git push
 alembic upgrade head
 
-# 6. If something goes wrong
+# 5. Rollback if needed
 alembic downgrade -1
 ```
 
 ### Troubleshooting
 
 ```bash
-# Migration out of sync
-alembic stamp head               # Mark current DB as up-to-date
+# Mark DB as current
+alembic stamp head
 
-# Show SQL without executing
+# Show SQL without running
 alembic upgrade head --sql
 
-# Check what would run
-alembic upgrade head --sql > migration.sql
-cat migration.sql
-
-# Force revision
+# Force specific revision
 alembic stamp abc123
-
-# Show pending migrations
-alembic current
-alembic history --verbose
-```
-
-### Example Project Structure
-
-```
-project/
-├── alembic/
-│   ├── versions/
-│   │   ├── abc123_create_users_table.py
-│   │   └── def456_add_posts_table.py
-│   ├── env.py
-│   └── script.py.mako
-├── alembic.ini
-├── models.py
-├── database.py
-└── main.py
-```
-
-### Quick Reference
-
-```bash
-alembic init alembic                          # Initialize
-alembic revision -m "msg"                     # Manual migration
-alembic revision --autogenerate -m "msg"      # Auto migration
-alembic upgrade head                          # Apply all
-alembic downgrade -1                          # Revert one
-alembic current                               # Show current
-alembic history                               # Show history
 ```
