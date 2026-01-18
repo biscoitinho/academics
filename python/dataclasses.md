@@ -1,210 +1,103 @@
 ## Dataclasses
 
-Simplified way to create classes for storing data. Automatically generates `__init__`, `__repr__`, `__eq__` and more.
-
-### Basic dataclass
+Auto-generate special methods (`__init__`, `__repr__`, etc.).
 
 ```python
 from dataclasses import dataclass
 
 @dataclass
-class Person:
+class Point:
+    x: int
+    y: int
+
+p = Point(1, 2)
+print(p)  # Point(x=1, y=2)
+```
+
+### Default Values
+
+```python
+@dataclass
+class User:
     name: str
-    age: int
-    city: str
+    age: int = 0
+    active: bool = True
 
-# Automatically has __init__
-person = Person("Alice", 30, "NYC")
-
-# Automatically has __repr__
-print(person)  # Person(name='Alice', age=30, city='NYC')
-
-# Automatically has __eq__
-person2 = Person("Alice", 30, "NYC")
-print(person == person2)  # True
+user = User("Alice")
 ```
 
-### Without dataclass (manual way)
+### Field Options
 
 ```python
-class Person:
-    def __init__(self, name, age, city):
-        self.name = name
-        self.age = age
-        self.city = city
-    
-    def __repr__(self):
-        return f"Person(name={self.name!r}, age={self.age!r}, city={self.city!r})"
-    
-    def __eq__(self, other):
-        if not isinstance(other, Person):
-            return False
-        return (self.name, self.age, self.city) == (other.name, other.age, other.city)
-```
-
-### Default values
-
-```python
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 @dataclass
-class Product:
+class Item:
     name: str
-    price: float
-    quantity: int = 0
-    in_stock: bool = True
-
-product = Product("Laptop", 999.99)
-print(product)  # Product(name='Laptop', price=999.99, quantity=0, in_stock=True)
+    price: float = field(default=0.0)
+    tags: list = field(default_factory=list)
+    _internal: str = field(default="", repr=False)
 ```
 
-### Immutable dataclass (frozen)
+### Immutable
 
 ```python
-from dataclasses import dataclass
-
 @dataclass(frozen=True)
 class Point:
     x: int
     y: int
 
-point = Point(1, 2)
-# point.x = 5  # Error! FrozenInstanceError
+p = Point(1, 2)
+# p.x = 3  # Error! Frozen
 ```
 
-### Field options
+### Ordering
 
 ```python
-from dataclasses import dataclass, field
-
-@dataclass
-class User:
-    name: str
-    age: int
-    
-    # Don't include in __init__
-    created_at: str = field(init=False, default="2024-01-01")
-    
-    # Don't include in __repr__
-    password: str = field(repr=False, default="secret")
-    
-    # Mutable default value (list, dict)
-    friends: list = field(default_factory=list)
-
-user = User("Alice", 30)
-print(user)  # User(name='Alice', age=30, created_at='2024-01-01', friends=[])
-```
-
-### Post-init processing
-
-```python
-from dataclasses import dataclass, field
-
-@dataclass
-class Rectangle:
-    width: float
-    height: float
-    area: float = field(init=False)
-    
-    def __post_init__(self):
-        """Called after __init__."""
-        self.area = self.width * self.height
-
-rect = Rectangle(5, 10)
-print(rect.area)  # 50
-```
-
-### With methods
-
-```python
-from dataclasses import dataclass
-
-@dataclass
-class BankAccount:
-    owner: str
-    balance: float = 0.0
-    
-    def deposit(self, amount):
-        self.balance += amount
-    
-    def withdraw(self, amount):
-        if amount > self.balance:
-            raise ValueError("Insufficient funds")
-        self.balance -= amount
-
-account = BankAccount("Alice", 100)
-account.deposit(50)
-print(account.balance)  # 150
-```
-
-### Ordering (comparison)
-
-```python
-from dataclasses import dataclass
-
 @dataclass(order=True)
 class Person:
     name: str
     age: int
 
-people = [
-    Person("Charlie", 35),
-    Person("Alice", 30),
-    Person("Bob", 25)
-]
-
-# Can now sort because order=True
-sorted_people = sorted(people)
-for p in sorted_people:
-    print(p)
+p1 = Person("Alice", 30)
+p2 = Person("Bob", 25)
+print(p2 < p1)  # True (compared by fields)
 ```
 
-### Inheritance
+### Custom Methods
 
 ```python
-from dataclasses import dataclass
-
 @dataclass
-class Animal:
-    name: str
-    age: int
+class Rectangle:
+    width: float
+    height: float
 
-@dataclass
-class Dog(Animal):
-    breed: str
-
-dog = Dog("Buddy", 5, "Golden Retriever")
-print(dog)  # Dog(name='Buddy', age=5, breed='Golden Retriever')
+    def area(self):
+        return self.width * self.height
 ```
 
-### Converting to dict/tuple
+### Post-init
 
 ```python
-from dataclasses import dataclass, asdict, astuple
-
 @dataclass
-class Person:
-    name: str
-    age: int
+class Circle:
+    radius: float
+    area: float = field(init=False)
 
-person = Person("Alice", 30)
-
-# To dictionary
-print(asdict(person))  # {'name': 'Alice', 'age': 30}
-
-# To tuple
-print(astuple(person))  # ('Alice', 30)
+    def __post_init__(self):
+        self.area = 3.14 * self.radius ** 2
 ```
 
-### When to use dataclasses
+### Quick Reference
 
-**Use when:**
-- Primarily storing data
-- Need automatic `__init__`, `__repr__`, `__eq__`
-- Want immutable objects (frozen=True)
-- Clean, readable code
+```python
+from dataclasses import dataclass, field
 
-**Don't use when:**
-- Complex initialization logic
-- Need custom `__init__` behavior
-- Python version < 3.7
+@dataclass(frozen=True, order=True)
+class Item:
+    name: str
+    price: float = 0.0
+    tags: list = field(default_factory=list)
+
+item = Item("Book", 9.99, ["fiction"])
+```
