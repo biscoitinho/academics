@@ -1,6 +1,6 @@
 # Arch Linux and Omarchy - Overview and Comparison
 
-Comprehensive guide to Arch Linux, Omarchy distribution, and how they compare to other Linux distributions.
+Guide to Arch Linux and Omarchy distribution with comparison to Ubuntu and Red Hat Enterprise Linux.
 
 ---
 
@@ -8,157 +8,78 @@ Comprehensive guide to Arch Linux, Omarchy distribution, and how they compare to
 
 1. [Arch Linux Overview](#arch-linux-overview)
 2. [Omarchy Linux Overview](#omarchy-linux-overview)
-3. [Comparison with Other Distributions](#comparison-with-other-distributions)
+3. [Comparison with Ubuntu and RHEL](#comparison-with-ubuntu-and-rhel)
 4. [Package Management](#package-management)
-5. [Installation Process](#installation-process)
-6. [System Configuration](#system-configuration)
-7. [Use Cases](#use-cases)
+5. [Installation](#installation)
+6. [Use Cases](#use-cases)
 
 ---
 
 ## Arch Linux Overview
 
-### What is Arch Linux?
+### Philosophy
 
-**Philosophy**:
-- KISS (Keep It Simple, Stupid)
+**KISS Principle** (Keep It Simple, Stupid):
 - User-centric, not user-friendly
 - Pragmatic minimalism
 - Rolling release model
 - Transparency and control
+- Vanilla upstream software (no patching)
 
 **Key Characteristics**:
 ```
-Release Model: Rolling release (no versions)
+Release Model: Rolling (no versions)
 Package Manager: pacman
 Init System: systemd
-Default Shell: bash
-Repository: Binary packages
+Repositories: Binary packages
 Build System: PKGBUILD (makepkg)
-Documentation: ArchWiki (best Linux wiki)
+Documentation: ArchWiki (legendary quality)
+AUR: 85,000+ user packages
 ```
-
-### Arch Principles
-
-**1. Simplicity**:
-- No unnecessary additions or modifications
-- Clean, vanilla upstream software
-- Minimal default install
-
-**2. Modernity**:
-- Latest stable packages
-- Cutting-edge software
-- Rapid updates
-
-**3. Pragmatism**:
-- User makes decisions
-- No hand-holding
-- Freedom to break system
-
-**4. User-Centrality**:
-- Designed for competent users
-- Complete control
-- Manual configuration
-
-**5. Versatility**:
-- General-purpose distribution
-- Can be anything you make it
-- No predefined use case
 
 ### Package Repositories
 
 ```
-[core]
-  - Essential packages
-  - System base
-  - Boot process
-
-[extra]
-  - Additional software
-  - Desktop environments
-  - Applications
-
-[community]
-  - User-contributed packages
-  - Maintained by TUs (Trusted Users)
-
-[multilib]
-  - 32-bit libraries on 64-bit systems
-  - Wine, Steam compatibility
+[core]      - Essential system packages
+[extra]     - Additional official software
+[community] - User-contributed (Trusted Users)
+[multilib]  - 32-bit libraries on 64-bit
 
 AUR (Arch User Repository)
-  - User-submitted PKGBUILDs
+  - User-submitted build scripts
   - Not officially supported
-  - 85,000+ packages
-  - Build from source
+  - Review before installing
 ```
 
-### Pacman Package Manager
+### Pacman Commands
 
-**Basic Commands**:
 ```bash
-# Update system
+# System update
 sudo pacman -Syu
 
-# Install package
+# Install/remove
 sudo pacman -S package_name
+sudo pacman -Rs package_name      # Remove with deps
 
-# Remove package
-sudo pacman -R package_name
+# Search and query
+pacman -Ss search_term            # Search repos
+pacman -Q                         # List installed
+pacman -Ql package                # List files
+pacman -Qo /path/to/file          # Find owner
 
-# Remove with dependencies
-sudo pacman -Rs package_name
-
-# Search packages
-pacman -Ss search_term
-
-# Query installed packages
-pacman -Q
-
-# Get package info
-pacman -Si package_name
-
-# Clean cache
-sudo pacman -Sc
-
-# Show package dependencies
-pactree package_name
+# Maintenance
+sudo pacman -Sc                   # Clean cache
+sudo pacman -Rns $(pacman -Qdtq)  # Remove orphans
 ```
 
-**Configuration** (`/etc/pacman.conf`):
-```ini
-[options]
-HoldPkg = pacman glibc
-Architecture = auto
-Color
-CheckSpace
-VerbosePkgLists
-ParallelDownloads = 5
+### AUR Usage
 
-[core]
-Include = /etc/pacman.d/mirrorlist
-
-[extra]
-Include = /etc/pacman.d/mirrorlist
-
-[community]
-Include = /etc/pacman.d/mirrorlist
-```
-
-### AUR (Arch User Repository)
-
-**AUR Helpers** (not official):
-
+**AUR Helpers** (yay/paru):
 ```bash
-# yay (most popular)
-yay -S package_name
-yay -Syu              # Update system + AUR
+yay -S package_name               # Install from AUR
+yay -Syu                          # Update everything
 
-# paru (Rust-based, yay alternative)
-paru -S package_name
-paru -Syu
-
-# Manual AUR installation
+# Manual installation
 git clone https://aur.archlinux.org/package.git
 cd package
 makepkg -si
@@ -166,52 +87,25 @@ makepkg -si
 
 **PKGBUILD Example**:
 ```bash
-# Maintainer: Your Name <email>
 pkgname=myapp
 pkgver=1.0.0
 pkgrel=1
-pkgdesc="My application"
 arch=('x86_64')
-url="https://example.com/myapp"
-license=('MIT')
-depends=('python' 'python-requests')
-makedepends=('git')
-source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
-sha256sums=('SKIP')
+depends=('python')
 
 build() {
-    cd "$srcdir/$pkgname-$pkgver"
     python setup.py build
 }
 
 package() {
-    cd "$srcdir/$pkgname-$pkgver"
-    python setup.py install --root="$pkgdir" --optimize=1
+    python setup.py install --root="$pkgdir"
 }
 ```
 
-### System Management
-
-**systemd**:
+**Security**: Always review PKGBUILD before installing:
 ```bash
-# Service management
-sudo systemctl start service_name
-sudo systemctl stop service_name
-sudo systemctl restart service_name
-sudo systemctl enable service_name
-sudo systemctl disable service_name
-sudo systemctl status service_name
-
-# System state
-systemctl list-units
-systemctl list-unit-files
-systemd-analyze blame    # Boot time analysis
-
-# Logs
-journalctl -xe           # Recent errors
-journalctl -u service    # Service logs
-journalctl --since today # Today's logs
-journalctl -f            # Follow logs
+cat PKGBUILD
+grep -E "curl|wget|sudo" PKGBUILD
 ```
 
 ---
@@ -220,282 +114,157 @@ journalctl -f            # Follow logs
 
 ### What is Omarchy?
 
-**Definition**: Opinionated, pre-configured Arch Linux distribution with Hyprland window manager, created by David Heinemeier Hansson (DHH, creator of Ruby on Rails).
+**Created by**: David Heinemeier Hansson (DHH, Ruby on Rails creator)
+**Philosophy**: "Omakase" (おまかせ) - curated, chef's choice Arch experience
+**Version**: 3.3.0 (January 2026)
 
-**"Omakase"** (おまかせ): Japanese for "I'll leave it up to you" - a curated, chef's choice experience.
-
-**Philosophy**:
-- Arch Linux base with sane defaults
+**Concept**:
+- Arch base with opinionated defaults
 - Developer-focused workflow
-- Aesthetically pleasing out-of-box
-- Security-first approach
-- No DIY configuration burden
-
-**Version**: Latest is Omarchy 3.3.0 (January 2026)
+- Security-first (mandatory encryption)
+- Pre-configured Hyprland (Wayland)
+- Zero-configuration productivity
 
 ### Key Features
 
-**1. Pre-configured Hyprland**:
+**1. Hyprland Wayland Compositor**:
 ```
-Window Manager: Hyprland (Wayland compositor)
-  - Tiling window manager
-  - Dynamic workspaces
-  - Animations and eye candy
-  - Touch gesture support
-  - Multi-monitor support
-
-Configuration:
-  - Pre-themed with beautiful aesthetics
-  - Keybindings configured
-  - Status bar (waybar) setup
-  - Application launcher ready
+- Tiling window manager (pre-configured)
+- Beautiful animations
+- Multi-monitor support
+- Touch gestures
+- Waybar status bar
+- Wofi launcher
 ```
 
 **2. Mandatory Security**:
 ```
-Full Disk Encryption:
-  - LUKS (Linux Unified Key Setup)
-  - Mandatory, not optional
-  - Protects against physical theft
+LUKS Encryption:
+  - Full disk encryption (required)
   - Encrypted swap
+  - No opt-out
 
-Firewall (enabled by default):
-  - All incoming traffic blocked except:
-    - Port 22: SSH
-    - Port 53317: LocalSend
-  - Outgoing traffic allowed
-  - Easy management interface
+Firewall (default enabled):
+  - Block all incoming except:
+    - Port 22 (SSH)
+    - Port 53317 (LocalSend)
 ```
 
-**3. Developer Tools Pre-installed**:
+**3. Developer Tooling**:
 ```
-Editor: Neovim (pre-configured)
-Terminal: Ghostty (modern GPU-accelerated)
-Browser: Chromium
-Communication: Slack, Discord
-Writing: Typora (Markdown editor), LibreOffice
-Media: Spotify
-Development: Git, Docker, various language runtimes
+Pre-installed:
+  - Neovim (configured)
+  - Ghostty terminal
+  - Git, Docker
+  - Chromium
+  - Language runtimes (Python, Node.js, Ruby, etc.)
 ```
 
-**4. Streamlined Installation**:
-- Guided installer (unlike Arch)
-- Interactive TUI (Text User Interface)
-- Automated partitioning option
-- Network configuration wizard
-- User creation helper
+### Arch vs Omarchy
 
-### Differences from Stock Arch
-
-| Feature | Arch Linux | Omarchy |
-|---------|-----------|---------|
-| **Installation** | Manual, complex | Guided installer |
-| **Desktop** | None (choose your own) | Hyprland (Wayland) |
+| Feature | Arch | Omarchy |
+|---------|------|---------|
+| **Installation** | Manual (1-3 hours) | Guided TUI (20 mins) |
+| **Desktop** | None | Hyprland (Wayland) |
 | **Configuration** | DIY everything | Pre-configured |
-| **Security** | Optional | Mandatory (LUKS, firewall) |
-| **Default Software** | Minimal | Developer toolkit |
-| **Theme** | None | Curated aesthetic |
-| **Target Audience** | DIY enthusiasts | Productive developers |
+| **Security** | Optional | Mandatory (LUKS + firewall) |
+| **Software** | Base system only | Developer toolkit |
 | **Learning Curve** | Steep | Moderate |
-| **Setup Time** | Hours/days | Minutes |
-| **Customization** | Unlimited | Still flexible |
-
-### Omarchy Package Management
-
-**Custom Repository**:
-```
-Omarchy maintains its own package repository:
-  - Omarchy-specific configurations
-  - Pre-configured applications
-  - Custom themes and tools
-  - Security patches
-
-Access to Arch Repos:
-  - [core], [extra], [community]
-  - Full Arch package ecosystem
-  - AUR compatibility maintained
-```
-
-**Package Manager**:
-```bash
-# Same pacman interface
-sudo pacman -Syu
-
-# AUR helpers work (yay, paru)
-yay -S package_name
-
-# Omarchy-specific packages
-pacman -Ss omarchy
-```
-
-### Omarchy Installation Process
-
-**Step-by-Step**:
-
-1. **Download ISO**
-   ```bash
-   wget https://omarchy.org/download/omarchy-latest.iso
-   ```
-
-2. **Create Bootable USB**
-   ```bash
-   sudo dd if=omarchy-latest.iso of=/dev/sdX bs=4M status=progress
-   ```
-
-3. **Boot and Run Installer**
-   ```
-   Omarchy Installer (TUI)
-   ├── Language Selection
-   ├── Keyboard Layout
-   ├── Network Configuration (WiFi/Ethernet)
-   ├── Disk Partitioning
-   │   ├── Auto (recommended): LUKS encryption
-   │   └── Manual: Custom layout
-   ├── User Creation
-   │   ├── Username
-   │   ├── Password
-   │   └── Hostname
-   ├── Timezone Selection
-   └── Installation Confirmation
-   ```
-
-4. **Post-Install**
-   ```
-   System boots to:
-   - LUKS password prompt
-   - Hyprland login
-   - Pre-configured desktop
-   - Ready to use
-   ```
+| **Customization** | Unlimited | High (but opinionated) |
+| **Target** | Linux enthusiasts | Productive developers |
 
 ---
 
-## Comparison with Other Distributions
+## Comparison with Ubuntu and RHEL
 
 ### Arch vs Ubuntu
 
 | Feature | Arch | Ubuntu |
 |---------|------|--------|
-| **Release Model** | Rolling | Point release (6 months) |
-| **Stability** | Cutting-edge | Stable, tested |
-| **Package Management** | pacman | apt |
+| **Release Model** | Rolling | Point (6 months) + LTS (2 years) |
+| **Stability** | Bleeding edge | Stable, tested |
+| **Updates** | Continuous | Scheduled releases |
+| **Package Manager** | pacman | apt/snap |
 | **Default Desktop** | None | GNOME |
+| **Corporate Support** | None | Canonical |
 | **Target User** | Advanced | Beginner-friendly |
-| **Documentation** | Excellent (ArchWiki) | Good (Ubuntu docs) |
-| **Corporate Support** | Community | Canonical |
-| **PPAs** | AUR | PPAs |
-| **Philosophy** | Minimalist | User-friendly |
-| **Updates** | Continuous | Scheduled |
+| **Philosophy** | Minimal, user control | User-friendly, batteries included |
+| **Documentation** | ArchWiki (excellent) | Ubuntu docs (good) |
+| **Software Repos** | ~13k + 85k AUR | ~60k packages |
 
-**When to use Arch**:
-- Want latest software
-- Enjoy customization
-- Learn Linux internals
-- Need specific configurations
+**Ubuntu Advantages**:
+- Beginner-friendly GUI tools
+- Long-term support (LTS = 5 years)
+- Corporate backing (Canonical)
+- Extensive hardware support out-of-box
+- Larger user base for support
 
-**When to use Ubuntu**:
-- Want stability
-- Need enterprise support
-- Prefer GUI tools
-- New to Linux
+**Arch Advantages**:
+- Latest software immediately
+- Minimal bloat
+- Complete control
+- Superior documentation (ArchWiki)
+- AUR ecosystem
 
-### Arch vs Fedora
+**When to Choose**:
+- **Arch**: Latest packages, learning Linux, full control, development workstation
+- **Ubuntu**: Stability, enterprise use, beginners, GUI preference, LTS support
 
-| Feature | Arch | Fedora |
-|---------|------|--------|
-| **Release Model** | Rolling | Point (6 months) |
-| **Bleeding Edge** | Yes | Moderate |
-| **Corporate Backing** | None | Red Hat |
-| **Default Desktop** | None | GNOME (Workstation) |
-| **Package Manager** | pacman | dnf |
-| **SELinux** | Optional | Enabled |
-| **Target** | Enthusiasts | Developers, Red Hat users |
-| **Systemd Integration** | Standard | Deep (systemd origin) |
+### Arch vs RHEL/Fedora
 
-**Fedora Advantages**:
-- Testing ground for RHEL
-- Strong security defaults (SELinux)
-- Corporate backing
-- Balanced between cutting-edge and stable
+| Feature | Arch | RHEL/Fedora |
+|---------|------|-------------|
+| **Release Model** | Rolling | Point (RHEL: 3 years, Fedora: 6 months) |
+| **Corporate Backing** | None | Red Hat (IBM) |
+| **Package Manager** | pacman | dnf (rpm) |
+| **Target** | Enthusiasts | Enterprise (RHEL), Developers (Fedora) |
+| **SELinux** | Optional | Enabled (strong security) |
+| **Support** | Community | Enterprise contracts (RHEL) |
+| **Certifications** | None | Red Hat certifications |
+| **Cost** | Free | RHEL: Paid, Fedora: Free |
+
+**RHEL/Fedora Advantages**:
+- Enterprise support contracts (RHEL)
+- Strong default security (SELinux enforcing)
+- Testing ground for RHEL (Fedora)
+- Certification programs
+- Stability and long lifecycle (RHEL)
 
 **Arch Advantages**:
 - True rolling release
 - More minimal base
-- Better documentation (ArchWiki)
-- Larger AUR ecosystem
+- Faster access to new software
+- No corporate decisions
+- Better for desktop/workstation
 
-### Arch vs Debian
+**When to Choose**:
+- **Arch**: Desktop/laptop, development, latest software, learning
+- **RHEL**: Servers, enterprise, mission-critical, support contracts
+- **Fedora**: Development, testing RHEL features, balanced approach
 
-| Feature | Arch | Debian |
-|---------|------|--------|
-| **Stability** | Latest | Rock-solid |
-| **Release Cycle** | Rolling | 2 years |
-| **Package Freshness** | Very fresh | Conservative |
-| **Init System** | systemd | systemd (default) |
-| **Package Count** | ~13,000 + AUR | ~59,000 |
-| **Philosophy** | Simplicity | Universal OS |
-| **Testing** | Minimal | Extensive |
-| **Target** | Enthusiasts | Servers, stability |
+### Package Management Comparison
 
-**Use Debian for**:
-- Servers (rock-solid stability)
-- Mission-critical systems
-- Long-term support needs
-- "Set and forget" mentality
+```bash
+# Update system
+pacman -Syu                  # Arch
+apt update && apt upgrade    # Ubuntu
+dnf upgrade                  # RHEL/Fedora
 
-**Use Arch for**:
-- Desktop/laptop (latest features)
-- Development workstation
-- Learning experience
-- Customization freedom
+# Install package
+pacman -S firefox            # Arch
+apt install firefox          # Ubuntu
+dnf install firefox          # RHEL/Fedora
 
-### Arch vs Gentoo
+# Search
+pacman -Ss firefox           # Arch
+apt search firefox           # Ubuntu
+dnf search firefox           # RHEL/Fedora
 
-| Feature | Arch | Gentoo |
-|---------|------|---------|
-| **Packages** | Binary | Source (compiled) |
-| **Installation Speed** | Fast | Very slow |
-| **Customization** | High | Extreme |
-| **USE Flags** | No | Yes (fine-grained control) |
-| **Compile Optimization** | Generic | CPU-specific |
-| **Complexity** | High | Very high |
-| **Update Time** | Minutes | Hours |
-
-**Gentoo Advantage**: Ultimate customization, compile-time optimization
-**Arch Advantage**: Faster installation/updates, still highly customizable
-
-### Arch-based Distributions
-
-**Popular Arch Derivatives**:
-
-1. **Manjaro**
-   - Beginner-friendly Arch
-   - GUI installer
-   - Delayed packages (stability)
-   - Pre-configured desktop environments
-
-2. **EndeavourOS**
-   - Near-vanilla Arch
-   - Friendly installer
-   - Community-focused
-   - Minimal bloat
-
-3. **Garuda Linux**
-   - Gaming-focused
-   - Performance tweaks
-   - Beautiful themes
-   - Btrfs + snapshots
-
-4. **Omarchy**
-   - Developer-focused
-   - Hyprland + Wayland
-   - Security-first
-   - Curated experience
-
-5. **ArcoLinux**
-   - Educational
-   - Multiple desktop editions
-   - Learning platform
+# Remove
+pacman -Rs firefox           # Arch (with deps)
+apt remove firefox           # Ubuntu
+dnf remove firefox           # RHEL/Fedora
+```
 
 ---
 
@@ -503,391 +272,287 @@ pacman -Ss omarchy
 
 ### Pacman Deep Dive
 
-**Database Location**:
+**Database Locations**:
 ```
-/var/lib/pacman/local/    # Installed packages
-/var/lib/pacman/sync/     # Repository databases
-/var/cache/pacman/pkg/    # Downloaded packages (cache)
+/var/lib/pacman/local/       # Installed packages
+/var/lib/pacman/sync/        # Repo databases
+/var/cache/pacman/pkg/       # Package cache
 ```
 
-**Advanced Usage**:
+**Advanced Commands**:
 ```bash
-# Install from local file
-sudo pacman -U /path/to/package.pkg.tar.zst
+# Install from file
+sudo pacman -U package.pkg.tar.zst
 
-# Download without installing
-sudo pacman -Sw package_name
-
-# Reinstall package
-sudo pacman -S --needed package_name
-
-# List files in package
+# List package files
 pacman -Ql package_name
 
-# Find which package owns a file
-pacman -Qo /path/to/file
+# Find file owner
+pacman -Qo /usr/bin/vim
 
-# List orphaned packages
+# Orphaned packages
 pacman -Qdt
-
-# Remove orphans
 sudo pacman -Rns $(pacman -Qdtq)
 
-# Check for package updates
-checkupdates
-
-# Downgrade package (cache)
+# Downgrade (from cache)
 cd /var/cache/pacman/pkg
 sudo pacman -U package-old-version.pkg.tar.zst
 ```
 
-**Hooks** (`/etc/pacman.d/hooks/`):
+**Pacman Hooks** (`/etc/pacman.d/hooks/`):
 ```ini
-# Example: Clear systemd journal after upgrade
 [Trigger]
 Operation = Upgrade
 Type = Package
 Target = systemd
 
 [Action]
-Description = Clearing old journal entries...
+Description = Clearing journal...
 When = PostTransaction
 Exec = /usr/bin/journalctl --vacuum-time=7d
 ```
 
 ### AUR Best Practices
 
-**Security Considerations**:
+**Security Checklist**:
 ```bash
-# Always review PKGBUILD
+# Review PKGBUILD
 cat PKGBUILD
 
-# Check for malicious commands
-grep -i "curl" PKGBUILD
-grep -i "wget" PKGBUILD
-grep -i "sudo" PKGBUILD
+# Check for suspicious commands
+grep -i "curl\|wget\|sudo\|rm -rf" PKGBUILD
 
 # Verify checksums
-makepkg -g  # Generate checksums
+makepkg -g
 
-# Check comments on AUR page
-# Look for:
-#   - Number of votes
-#   - Maintainer activity
-#   - Recent comments
-#   - Orphaned status
+# Check AUR page for:
+# - Vote count
+# - Last updated
+# - Maintainer activity
+# - Comments (security issues)
 ```
 
 **Common Issues**:
 ```bash
 # PGP key errors
-gpg --recv-keys <KEY_ID>
+gpg --recv-keys KEY_ID
 
 # Dependency conflicts
 yay -Sy --needed package
 
 # Build failures
-# Check .SRCINFO and dependencies
-makepkg --nobuild  # Download only
+makepkg --nobuild  # Download only, check deps
 ```
 
 ---
 
-## Installation Process
+## Installation
 
 ### Traditional Arch Installation
 
-**Step-by-Step** (condensed):
+**Condensed Steps**:
 
-1. **Boot Live Environment**
-   ```bash
-   # Verify boot mode (UEFI)
-   ls /sys/firmware/efi/efivars
-   ```
+```bash
+# 1. Boot live environment, verify UEFI
+ls /sys/firmware/efi/efivars
 
-2. **Connect to Internet**
-   ```bash
-   # WiFi
-   iwctl
-   station wlan0 connect "SSID"
+# 2. Connect to internet
+iwctl
+station wlan0 connect "SSID"
 
-   # Test connection
-   ping archlinux.org
-   ```
+# 3. Partition disk (UEFI example)
+cfdisk /dev/sda
+# /dev/sda1: 512M (EFI)
+# /dev/sda2: Rest (Linux)
 
-3. **Update System Clock**
-   ```bash
-   timedatectl set-ntp true
-   ```
+mkfs.fat -F32 /dev/sda1
+mkfs.ext4 /dev/sda2
 
-4. **Partition Disks**
-   ```bash
-   # List disks
-   lsblk
+mount /dev/sda2 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
 
-   # Partition (example for UEFI)
-   cfdisk /dev/sda
-   # /dev/sda1: 512M (EFI System)
-   # /dev/sda2: Rest (Linux filesystem)
+# 4. Install base system
+pacstrap /mnt base linux linux-firmware
+genfstab -U /mnt >> /mnt/etc/fstab
 
-   # Format
-   mkfs.fat -F32 /dev/sda1
-   mkfs.ext4 /dev/sda2
+# 5. Chroot and configure
+arch-chroot /mnt
 
-   # Mount
-   mount /dev/sda2 /mnt
-   mkdir /mnt/boot
-   mount /dev/sda1 /mnt/boot
-   ```
+ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+hwclock --systohc
 
-5. **Install Base System**
-   ```bash
-   pacstrap /mnt base linux linux-firmware
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
-   # Generate fstab
-   genfstab -U /mnt >> /mnt/etc/fstab
-   ```
+echo "myhostname" > /etc/hostname
+passwd
 
-6. **Chroot and Configure**
-   ```bash
-   arch-chroot /mnt
+# 6. Install bootloader
+pacman -S grub efibootmgr
+grub-install --target=x86_64-efi --efi-directory=/boot
+grub-mkconfig -o /boot/grub/grub.cfg
 
-   # Set timezone
-   ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
-   hwclock --systohc
+# 7. Reboot
+exit
+umount -R /mnt
+reboot
+```
 
-   # Localization
-   echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-   locale-gen
-   echo "LANG=en_US.UTF-8" > /etc/locale.conf
+**Post-Install**:
+```bash
+# Create user
+useradd -m -G wheel username
+passwd username
+EDITOR=nano visudo  # Uncomment %wheel ALL=(ALL) ALL
 
-   # Network
-   echo "myhostname" > /etc/hostname
+# Network
+pacman -S networkmanager
+systemctl enable NetworkManager
 
-   # Root password
-   passwd
+# Desktop (example: GNOME)
+pacman -S gnome
+systemctl enable gdm
 
-   # Bootloader (GRUB)
-   pacman -S grub efibootmgr
-   grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-   grub-mkconfig -o /boot/grub/grub.cfg
-   ```
+# AUR helper
+git clone https://aur.archlinux.org/yay.git
+cd yay && makepkg -si
+```
 
-7. **Reboot**
-   ```bash
-   exit
-   umount -R /mnt
-   reboot
-   ```
-
-**Time Required**: 1-3 hours (experienced), 4-8 hours (beginner)
+**Time**: 1-3 hours (experienced), 4-8 hours (beginner)
 
 ### Omarchy Installation
 
-**Simplified Process**:
-
-1. **Boot Omarchy Installer**
-2. **Follow TUI Prompts**
-   - Language, keyboard, network
-   - Automatic LUKS encryption
+**Steps**:
+1. Download ISO from omarchy.org
+2. Create bootable USB: `dd if=omarchy.iso of=/dev/sdX bs=4M`
+3. Boot and follow TUI installer:
+   - Language/keyboard
+   - Network setup
+   - Auto LUKS encryption (mandatory)
    - User creation
-3. **Wait for Installation** (~10-15 minutes)
-4. **Reboot into Configured System**
+   - Timezone
+4. Reboot into configured system
 
-**Time Required**: 20-30 minutes total
+**Time**: 20-30 minutes total
 
----
-
-## System Configuration
-
-### Arch Post-Install Tasks
-
-**Essential Steps**:
-
-1. **Create User**
-   ```bash
-   useradd -m -G wheel -s /bin/bash username
-   passwd username
-
-   # Enable sudo
-   EDITOR=nano visudo
-   # Uncomment: %wheel ALL=(ALL) ALL
-   ```
-
-2. **Install Network Manager**
-   ```bash
-   pacman -S networkmanager
-   systemctl enable NetworkManager
-   systemctl start NetworkManager
-   ```
-
-3. **Install Desktop Environment**
-   ```bash
-   # GNOME
-   pacman -S gnome gnome-extra
-   systemctl enable gdm
-
-   # KDE Plasma
-   pacman -S plasma-meta kde-applications
-   systemctl enable sddm
-
-   # Hyprland (like Omarchy)
-   pacman -S hyprland kitty waybar wofi
-   ```
-
-4. **Install Essential Software**
-   ```bash
-   # Audio
-   pacman -S pipewire pipewire-alsa pipewire-pulse
-
-   # Fonts
-   pacman -S ttf-dejavu ttf-liberation noto-fonts
-
-   # Browser
-   pacman -S firefox
-
-   # AUR helper
-   git clone https://aur.archlinux.org/yay.git
-   cd yay && makepkg -si
-   ```
-
-### Omarchy Configuration
-
-**Already Configured**:
-- Hyprland window manager
-- Audio (Pipewire)
-- Fonts and themes
-- Developer tools
-- Security (firewall, encryption)
-
-**Customization**:
+**Post-Install**:
 ```bash
-# Hyprland config
+# Already configured:
+# - Hyprland + Waybar
+# - Neovim, Ghostty
+# - Audio (Pipewire)
+# - Firewall
+# - Developer tools
+
+# Customization
 ~/.config/hypr/hyprland.conf
-
-# Waybar (status bar)
 ~/.config/waybar/config
-
-# Terminal (Ghostty)
 ~/.config/ghostty/config
-
-# Neovim
-~/.config/nvim/
 ```
 
 ---
 
 ## Use Cases
 
-### When to Use Arch Linux
+### Arch Linux
 
-**Ideal For**:
+**Best For**:
 - Learning Linux internals
-- Full customization control
-- Latest software packages
-- Minimalist philosophy
-- DIY approach to computing
-- Development workstation
+- Latest software (cutting-edge development)
+- Full customization freedom
+- Development workstations
 - Gaming (latest drivers)
+- Minimalist setups
 
-**Not Ideal For**:
-- Mission-critical servers (use Debian/RHEL)
+**Not For**:
+- Mission-critical servers (use RHEL/Debian)
 - Beginners (steep learning curve)
 - "Set and forget" systems
-- Enterprise environments
-- Users who want GUI tools
+- Enterprise with support contracts
 
-### When to Use Omarchy
-
-**Ideal For**:
-- Software developers
-- Users who want Arch benefits without setup burden
-- Security-conscious users
-- Wayland/Hyprland enthusiasts
-- Those who value aesthetics
-- Productivity-focused workflow
-- Former macOS users switching to Linux
-
-**Not Ideal For**:
-- Users who want GNOME/KDE
-- Those who prefer X11
-- Users wanting complete customization freedom
-- Traditional desktop paradigm users
-
-### Arch Maintenance
-
-**Daily/Weekly Tasks**:
+**Maintenance**:
 ```bash
-# Update system (do regularly!)
+# Regular updates (weekly recommended)
 sudo pacman -Syu
 
-# Check for news
+# Check Arch news before major updates
 https://archlinux.org/news/
 
-# Clear package cache (monthly)
-sudo pacman -Sc
-
-# Remove orphans (as needed)
-sudo pacman -Rns $(pacman -Qdtq)
+# Backup strategy
+pacman -Qqe > pkglist.txt     # Save package list
 ```
 
-**Breaking Changes**:
-- Read news before updating
-- Manual intervention sometimes required
-- Configuration files may need merging
-- Accept that things might break
+### Omarchy
 
-**Backup Strategy**:
-```bash
-# Timeshift (Btrfs snapshots)
-yay -S timeshift
+**Best For**:
+- Software developers
+- Security-conscious users
+- Arch benefits without DIY burden
+- Wayland/Hyprland enthusiasts
+- macOS refugees
+- Productivity-focused workflow
 
-# rsync backup
-rsync -aAXv --exclude={"/dev/*","/proc/*"} / /mnt/backup/
+**Not For**:
+- GNOME/KDE preference
+- X11 requirement
+- Complete customization freedom
+- Traditional desktop users
 
-# Package list backup
-pacman -Qqe > pkglist.txt
-# Restore: pacman -S - < pkglist.txt
-```
+### Ubuntu LTS
+
+**Best For**:
+- Beginners to Linux
+- Stability over latest features
+- Enterprise deployments
+- Long-term support (5 years)
+- GUI-focused users
+- Wide hardware compatibility
+
+### RHEL/Fedora
+
+**Best For**:
+- **RHEL**: Enterprise servers, support contracts, certifications
+- **Fedora**: Developers, testing latest features, Red Hat ecosystem
+- Strong security requirements (SELinux)
+- Corporate environments
 
 ---
 
 ## Key Takeaways
 
-**Arch Linux**:
-- Ultimate flexibility and control
-- Rolling release (always up-to-date)
-- Excellent documentation (ArchWiki)
-- Large package ecosystem (pacman + AUR)
-- Steep learning curve
-- Not for everyone
-
-**Omarchy**:
-- Arch benefits with sane defaults
-- Developer-optimized workflow
-- Security-first approach
-- Beautiful out-of-box experience
-- Saves setup time
-- Still maintains Arch flexibility
-
 **Choose Arch if**:
-- You enjoy tinkering
-- Want to learn Linux deeply
+- You want latest software
+- Enjoy learning and tinkering
 - Need complete control
-- Have time for maintenance
+- Desktop/development use
+- Accept occasional breakage
 
 **Choose Omarchy if**:
-- You want productivity
-- Value security defaults
-- Like Arch but not the setup
-- Prefer Hyprland/Wayland
-- Developer workflow focused
+- You want Arch benefits pre-configured
+- Security is priority (mandatory encryption)
+- Developer-focused workflow
+- Save setup time
+- Like Hyprland/Wayland
 
-**Avoid Both if**:
-- You need guaranteed stability
-- Want enterprise support
-- Prefer point releases
-- Need GUI-based management
+**Choose Ubuntu if**:
+- You're new to Linux
+- Need stability and LTS
+- Want GUI tools
+- Prefer "it just works"
+- Enterprise backing matters
+
+**Choose RHEL/Fedora if**:
+- Enterprise server use (RHEL)
+- Need support contracts (RHEL)
+- Want Red Hat ecosystem
+- Development with stability (Fedora)
+- SELinux security model
+
+**Rolling vs Point Release**:
+- **Rolling** (Arch): Continuous updates, latest software, potential breakage
+- **Point** (Ubuntu/RHEL): Scheduled releases, tested stability, older packages
 
 ---
 
@@ -896,9 +561,5 @@ pacman -Qqe > pkglist.txt
 - [Omarchy: The brand new Arch Linux experience](https://rashm1n.medium.com/omarchy-the-brand-new-arch-linux-experience-what-and-why-40c602f6745e)
 - [The Omarchy Manual](https://learn.omacom.io/2/the-omarchy-manual)
 - [Omarchy: DHH Made an Arch Linux Distro](https://fivenines.io/blog/omarchy-what-it-is-how-it-works/)
-- [It's time to try OMARCHY!](https://dev.to/pkorsch/its-time-to-try-omarchy-2k9j)
-- [Omarchy Linux Review: Opinionated Arch + Hyprland](https://www.thinklet.blog/omarchy-linux-review-arch-hyprland)
-- [DistroWatch.com: Omarchy](https://distrowatch.com/omarchy)
-- [My Journey from macOS to Arch Linux with Omarchy](https://www.ssp.sh/blog/macbook-to-arch-linux-omarchy/)
+- [Omarchy Linux Review](https://www.thinklet.blog/omarchy-linux-review-arch-hyprland)
 - [Omarchy is out](https://world.hey.com/dhh/omarchy-is-out-4666dd31)
-- [Omarchy: A New Arch Linux Distro from 37signals](https://blog.openreplay.com/omarchy-new-arch-linux-distro-37signals/)
