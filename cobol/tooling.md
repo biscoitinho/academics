@@ -43,20 +43,18 @@ Commercial COBOL compiler and IDE for Windows, Linux, and cloud.
 
 ## Editors and IDE Support
 
-### VS Code with COBOL Extensions
-The most accessible setup for learning COBOL.
+### Vim / Neovim
+Good lightweight setup for COBOL development.
 
-Extensions:
-- **Broadcom COBOL Language Support** - Syntax highlighting, code completion, copybook support
-- **Bitlang COBOL** - Syntax highlighting and snippets
-- **COBOL Debugger** - Debug GnuCOBOL programs
+- Built-in COBOL syntax highlighting (ships with Vim's runtime files)
+- **vim-cobol** plugin - Improved syntax highlighting and indentation
+- **coc.nvim** or **nvim-lspconfig** with a COBOL language server for completion
 
-Settings for fixed-format COBOL:
-```json
-{
-  "editor.rulers": [6, 7, 11, 72],
-  "editor.tabSize": 4
-}
+Configuration for fixed-format COBOL in `.vimrc`:
+```vim
+autocmd FileType cobol setlocal colorcolumn=7,8,12,73
+autocmd FileType cobol setlocal tabstop=4 shiftwidth=4 expandtab
+autocmd FileType cobol setlocal textwidth=72
 ```
 
 ### IBM Developer for z/OS (IDz)
@@ -231,7 +229,7 @@ Run Linux containers on z/OS for modern tooling alongside COBOL.
 | Purpose | Tool |
 |---------|------|
 | Compiler | GnuCOBOL |
-| Editor | VS Code + COBOL extensions |
+| Editor | Vim + vim-cobol |
 | Debugging | GnuCOBOL debug mode + DISPLAY |
 | Testing | COBOL-Check |
 | Build automation | Make |

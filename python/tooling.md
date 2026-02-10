@@ -214,7 +214,7 @@ disallow_untyped_defs = true
 ```
 
 ### pyright
-Microsoft's type checker. Faster than mypy, used by Pylance in VS Code.
+Microsoft's type checker. Faster than mypy. Works as a standalone CLI or through editor plugins (coc-pyright for Vim, etc.).
 
 ```bash
 pip install pyright
@@ -325,7 +325,7 @@ def my_function():
 ```
 
 ### debugpy
-Debug adapter for VS Code and other editors. Supports remote debugging.
+Debug adapter protocol implementation. Supports remote debugging and integration with DAP-capable editors.
 
 ## Code Metrics and Refactoring
 
