@@ -9,8 +9,8 @@ require_relative 'about_blocks'
 require_relative 'about_oop'
 require_relative 'about_modules'
 
-puts "\nRuby Koans — sciezka do oswiecenia"
-puts "Zrodlo: dokumentacja w ruby/"
-puts "Uzycie: uzupelnij __ poprawna wartoscia, a nastepnie uruchom ponownie\n"
+puts "\nRuby Koans — path to enlightenment"
+puts "Source: documentation in ruby/"
+puts "Usage:  replace __ with the correct value, then run again\n"
 
 Koans::Runner.run

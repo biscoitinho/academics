@@ -1,12 +1,12 @@
 require_relative 'koans'
 
-# Temat: Metody stringow w Ruby
-# Dokumentacja: ruby/string_methods.md
+# Topic: String methods in Ruby
+# Source: ruby/string_methods.md
 
 class AboutStrings < Koans::TestCase
-  def test_interpolacja
-    imie = "Ruby"
-    assert_equal __, "Czesc, #{imie}!"
+  def test_interpolation
+    name = "Ruby"
+    assert_equal __, "Hello, #{name}!"
   end
 
   def test_upcase
@@ -53,7 +53,7 @@ class AboutStrings < Koans::TestCase
     assert_equal __, "hello".reverse
   end
 
-  def test_mnozenie_stringa
+  def test_string_multiplication
     assert_equal __, "ha" * 3
   end
 
@@ -61,7 +61,7 @@ class AboutStrings < Koans::TestCase
     assert_equal __, "hello world".split(" ")
   end
 
-  def test_split_po_znaku
+  def test_split_on_character
     assert_equal __, "a,b,c".split(",")
   end
 
@@ -73,7 +73,7 @@ class AboutStrings < Koans::TestCase
     assert_equal __, "hello".length
   end
 
-  def test_indeksowanie
+  def test_indexing
     assert_equal __, "hello"[0]
     assert_equal __, "hello"[-1]
     assert_equal __, "hello"[1..3]
@@ -83,19 +83,19 @@ class AboutStrings < Koans::TestCase
     assert_equal __, "hello world".gsub("o", "0")
   end
 
-  def test_sub_zastepuje_pierwsze_wystapienie
+  def test_sub_replaces_first_occurrence
     assert_equal __, "aaa".sub("a", "b")
   end
 
-  def test_konwersja_na_integer
+  def test_convert_to_integer
     assert_equal __, "42".to_i
   end
 
-  def test_konwersja_na_float
+  def test_convert_to_float
     assert_equal __, "3.14".to_f
   end
 
-  def test_laczenie_stringow
+  def test_string_concatenation
     assert_equal __, "hello" + " " + "world"
   end
 
@@ -103,7 +103,7 @@ class AboutStrings < Koans::TestCase
     assert_equal __, "hello".index("l")
   end
 
-  def test_count_znakow
+  def test_count_characters
     assert_equal __, "hello".count("l")
   end
 end

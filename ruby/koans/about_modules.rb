@@ -1,123 +1,123 @@
 require_relative 'koans'
 
-# Temat: Moduly i mixiny
-# Dokumentacja: ruby/modules_mixins.md
+# Topic: Modules and mixins
+# Source: ruby/modules_mixins.md
 
-module Powitalny
-  def powitaj
-    "Czesc, jestem #{imie}"
+module Greetable
+  def greet
+    "Hello, I am #{name}"
   end
 end
 
-class OsobaZModulem
-  include Powitalny
-  attr_reader :imie
-  def initialize(imie)
-    @imie = imie
+class PersonWithModule
+  include Greetable
+  attr_reader :name
+  def initialize(name)
+    @name = name
   end
 end
 
-module Biegacz; end
+module Sprinter; end
 
-class Sportowiec
-  include Biegacz
+class Athlete
+  include Sprinter
 end
 
-module Plywak; end
+module Swimmer; end
 
-class Zawodnik
-  include Plywak
+class Contestant
+  include Swimmer
 end
 
-module PomocnikKlasowy
-  def opis
-    "jestem pomocna metoda klasowa"
+module ClassHelper
+  def description
+    "I am a class-level helper method"
   end
 end
 
-class Narzedzie
-  extend PomocnikKlasowy
+class Tool
+  extend ClassHelper
 end
 
-module Geometria
-  class Kolo
-    def ksztalt
-      "kolo"
+module Geometry
+  class Circle
+    def shape
+      "circle"
     end
   end
 end
 
-module Matematyka
+module MathConstants
   PI = 3.14159
 end
 
-module Jezdny
-  def jedz
-    "jade"
+module Drivable
+  def drive
+    "driving"
   end
 end
 
-module Latajacy
-  def lec
-    "lece"
+module Flyable
+  def fly
+    "flying"
   end
 end
 
-class LatajacySamochod
-  include Jezdny
-  include Latajacy
+class FlyingCar
+  include Drivable
+  include Flyable
 end
 
 module M1; end
 module M2; end
 
-class BazaZModulami
+class BaseWithModules
   include M1
   include M2
 end
 
 class AboutModules < Koans::TestCase
-  def test_include_dodaje_metody_instancji
-    o = OsobaZModulem.new("Alice")
-    assert_equal __, o.powitaj
+  def test_include_adds_instance_methods
+    p = PersonWithModule.new("Alice")
+    assert_equal __, p.greet
   end
 
-  def test_is_a_z_modulem
-    s = Sportowiec.new
-    assert_equal __, s.is_a?(Biegacz)
+  def test_is_a_with_module
+    a = Athlete.new
+    assert_equal __, a.is_a?(Sprinter)
   end
 
-  def test_ancestors_zawiera_modul
-    assert_equal __, Zawodnik.ancestors.include?(Plywak)
+  def test_ancestors_include_module
+    assert_equal __, Contestant.ancestors.include?(Swimmer)
   end
 
-  def test_extend_dodaje_metody_klasowe
-    assert_equal __, Narzedzie.opis
+  def test_extend_adds_class_methods
+    assert_equal __, Tool.description
   end
 
-  def test_modul_jako_przestrzen_nazw
-    k = Geometria::Kolo.new
-    assert_equal __, k.ksztalt
+  def test_module_as_namespace
+    c = Geometry::Circle.new
+    assert_equal __, c.shape
   end
 
-  def test_stala_w_module
-    assert_equal __, Matematyka::PI
+  def test_constant_in_module
+    assert_equal __, MathConstants::PI
   end
 
-  def test_wiele_modulow
-    ls = LatajacySamochod.new
-    assert_equal __, ls.jedz
-    assert_equal __, ls.lec
+  def test_multiple_modules
+    fc = FlyingCar.new
+    assert_equal __, fc.drive
+    assert_equal __, fc.fly
   end
 
-  def test_kolejnosc_ancestors
-    # ancestors: [BazaZModulami, M2, M1, Object, ...]
-    # ostatni include ma pierwszenstwo w lookup
-    assert_equal __, BazaZModulami.ancestors.first
-    assert_equal __, BazaZModulami.ancestors[1]
+  def test_ancestor_order
+    # ancestors: [BaseWithModules, M2, M1, Object, ...]
+    # the last included module takes precedence in lookup
+    assert_equal __, BaseWithModules.ancestors.first
+    assert_equal __, BaseWithModules.ancestors[1]
   end
 
-  def test_modul_nie_mozna_instancjonowac
-    assert_raise(NoMethodError) { Matematyka.new }
+  def test_module_cannot_be_instantiated
+    assert_raise(NoMethodError) { MathConstants.new }
   end
 end

@@ -12,31 +12,31 @@ module Koans
 
     def assert_equal(expected, actual)
       if expected == :fill_me_in || actual == :fill_me_in
-        raise KoanError, "Zastap __ poprawna wartoscia\n  Wynik: #{actual.inspect}"
+        raise KoanError, "Replace __ with the correct value\n  Got: #{actual.inspect}"
       end
       unless expected == actual
-        raise KoanError, "Oczekiwano: #{expected.inspect}\n  Otrzymano: #{actual.inspect}"
+        raise KoanError, "Expected: #{expected.inspect}\n  Got:      #{actual.inspect}"
       end
     end
 
     def assert(condition, msg = nil)
       if condition == :fill_me_in
-        raise KoanError, "Zastap __ poprawna wartoscia"
+        raise KoanError, "Replace __ with the correct value"
       end
       unless condition
-        raise KoanError, msg || "Oczekiwano wartosci prawdziwej, ale otrzymano: #{condition.inspect}"
+        raise KoanError, msg || "Expected truthy but got: #{condition.inspect}"
       end
     end
 
     def assert_nil(value)
       unless value.nil?
-        raise KoanError, "Oczekiwano nil, ale otrzymano: #{value.inspect}"
+        raise KoanError, "Expected nil but got: #{value.inspect}"
       end
     end
 
     def assert_raise(exception_class)
       yield
-      raise KoanError, "Oczekiwano wyjatku #{exception_class}, ale nie zostal rzucony"
+      raise KoanError, "Expected #{exception_class} to be raised but nothing was raised"
     rescue exception_class
       # ok
     end
@@ -72,24 +72,24 @@ module Koans
             instance.send(method)
             passed += 1
           rescue KoanError => e
-            puts "\n(o_o)  Potrzebujesz oswiecenia...\n"
+            puts "\n(o_o)  You need enlightenment...\n"
             puts "       #{method} (#{klass})"
             puts "       #{e.message}"
             source = find_source(klass, method)
-            puts "       Plik: #{source}" if source
-            puts "\n       Postep: #{passed}/#{total} ukonczone\n\n"
+            puts "       File: #{source}" if source
+            puts "\n       Progress: #{passed}/#{total} completed\n\n"
             return
           rescue => e
-            puts "\n(x_x)  Nieoczekiwany blad w #{method} (#{klass}):"
+            puts "\n(x_x)  Unexpected error in #{method} (#{klass}):"
             puts "       #{e.class}: #{e.message}"
-            puts "\n       Postep: #{passed}/#{total} ukonczone\n\n"
+            puts "\n       Progress: #{passed}/#{total} completed\n\n"
             return
           end
         end
       end
 
-      puts "\n(^_^)  Gratulacje! Wszystkie #{total} koanow ukonczone!\n"
-      puts "       Jestes na sciezce do oswiecenia Ruby.\n\n"
+      puts "\n(^_^)  Congratulations! All #{total} koans completed!"
+      puts "       You are on the path to Ruby enlightenment.\n\n"
     end
 
     def self.find_source(klass, method)

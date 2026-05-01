@@ -1,33 +1,33 @@
 require_relative 'koans'
 
-# Temat: Prawdziwosc i falszywosc w Ruby
-# Dokumentacja: ruby/truthiness.md
+# Topic: Truthiness and falsiness in Ruby
+# Source: ruby/truthiness.md
 #
-# W Ruby TYLKO nil i false sa falszywe.
-# Wszystko inne — lacznie z 0, "" i [] — jest prawdziwe.
+# In Ruby ONLY nil and false are falsy.
+# Everything else — including 0, "" and [] — is truthy.
 
 class AboutTruthiness < Koans::TestCase
-  def test_nil_jest_falszy
+  def test_nil_is_falsy
     assert_equal __, !!nil
   end
 
-  def test_false_jest_falszy
+  def test_false_is_falsy
     assert_equal __, !!false
   end
 
-  def test_zero_jest_prawdziwy
+  def test_zero_is_truthy
     assert_equal __, !!0
   end
 
-  def test_pusty_string_jest_prawdziwy
+  def test_empty_string_is_truthy
     assert_equal __, !!""
   end
 
-  def test_pusta_tablica_jest_prawdziwa
+  def test_empty_array_is_truthy
     assert_equal __, !![]
   end
 
-  def test_pusty_hash_jest_prawdziwy
+  def test_empty_hash_is_truthy
     assert_equal __, !!{}
   end
 
@@ -35,51 +35,51 @@ class AboutTruthiness < Koans::TestCase
     assert_equal __, nil.nil?
   end
 
-  def test_zero_nie_jest_nil
+  def test_zero_is_not_nil
     assert_equal __, 0.nil?
   end
 
-  def test_podwojne_zaprzeczenie_zwraca_boolean
+  def test_double_negation_returns_boolean
     assert_equal __, !!42
     assert_equal __, !!nil
   end
 
   def test_conditional_assignment
     x = nil
-    x ||= "domyslna"
+    x ||= "default"
     assert_equal __, x
   end
 
-  def test_conditional_assignment_nie_nadpisuje_wartosci
-    x = "juz ustawiona"
-    x ||= "domyslna"
+  def test_conditional_assignment_does_not_overwrite
+    x = "already set"
+    x ||= "default"
     assert_equal __, x
   end
 
-  def test_safe_navigation_na_nil
-    # &. nie wywoluje metody gdy obiekt jest nil — zwraca nil
+  def test_safe_navigation_on_nil
+    # &. does not call the method when the receiver is nil — returns nil
     assert_equal __, nil&.upcase
   end
 
-  def test_safe_navigation_na_wartosci
+  def test_safe_navigation_on_value
     assert_equal __, "hello"&.upcase
   end
 
-  def test_unless_jako_odwrotnosc_if
-    wynik = unless false
-      "wykonano"
+  def test_unless_as_inverse_of_if
+    result = unless false
+      "executed"
     end
-    assert_equal __, wynik
+    assert_equal __, result
   end
 
-  def test_operator_and_and
-    assert_equal __, (true && "wartosc")
-    assert_equal __, (nil && "wartosc")
+  def test_and_operator
+    assert_equal __, (true && "value")
+    assert_equal __, (nil && "value")
   end
 
-  def test_operator_or
-    assert_equal __, (nil || "zapasowa")
-    assert_equal __, (false || "zapasowa")
-    assert_equal __, ("pierwsza" || "zapasowa")
+  def test_or_operator
+    assert_equal __, (nil || "fallback")
+    assert_equal __, (false || "fallback")
+    assert_equal __, ("first" || "fallback")
   end
 end

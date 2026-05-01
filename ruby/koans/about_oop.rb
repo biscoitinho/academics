@@ -1,27 +1,27 @@
 require_relative 'koans'
 
-# Temat: Programowanie obiektowe w Ruby
-# Dokumentacja: ruby/oop_ruby.md
+# Topic: Object-oriented programming in Ruby
+# Source: ruby/oop_ruby.md
 
-module OOPPrzykladyKlasy
-  class Pies
-    def initialize(imie)
-      @imie = imie
+module OOPExamples
+  class Dog
+    def initialize(name)
+      @name = name
     end
 
-    def imie
-      @imie
-    end
-  end
-
-  class Kot
-    attr_accessor :imie
-    def initialize(imie)
-      @imie = imie
+    def name
+      @name
     end
   end
 
-  class Punkt
+  class Cat
+    attr_accessor :name
+    def initialize(name)
+      @name = name
+    end
+  end
+
+  class Point
     attr_reader :x, :y
     def initialize(x, y)
       @x = x
@@ -29,125 +29,125 @@ module OOPPrzykladyKlasy
     end
   end
 
-  class Pojazd; end
-  class Auto < Pojazd; end
+  class Vehicle; end
+  class Car < Vehicle; end
 
-  class Zwierze; end
-  class Ptak < Zwierze; end
+  class Animal; end
+  class Bird < Animal; end
 
-  class Kalkulator
-    def dodaj(a, b)
+  class Calculator
+    def add(a, b)
       a + b
     end
   end
 
-  class Figura
-    def opis
-      "jestem figura"
+  class Shape
+    def description
+      "I am a shape"
     end
   end
 
-  class Kolo < Figura; end
+  class Circle < Shape; end
 
-  class Baza
-    def powitanie
-      "Czesc z bazy"
+  class Base
+    def greeting
+      "Hello from base"
     end
   end
 
-  class Pochodna < Baza
-    def powitanie
-      "Czesc z pochodnej"
+  class Derived < Base
+    def greeting
+      "Hello from derived"
     end
   end
 
-  class Rodzic
-    def przedstaw_sie
-      "Jestem rodzicem"
+  class Parent
+    def introduce
+      "I am the parent"
     end
   end
 
-  class Dziecko < Rodzic
-    def przedstaw_sie
-      super + " i dzieckiem"
+  class Child < Parent
+    def introduce
+      super + " and the child"
     end
   end
 
-  class Licznik
-    @@liczba = 0
+  class Counter
+    @@count = 0
 
-    def self.resetuj
-      @@liczba = 0
+    def self.reset
+      @@count = 0
     end
 
-    def self.zwieksz
-      @@liczba += 1
+    def self.increment
+      @@count += 1
     end
 
-    def self.wartosc
-      @@liczba
+    def self.value
+      @@count
     end
   end
 end
 
 class AboutOOP < Koans::TestCase
-  def test_tworzenie_obiektu
-    p = OOPPrzykladyKlasy::Pies.new("Rex")
-    assert_equal __, p.imie
+  def test_creating_an_object
+    d = OOPExamples::Dog.new("Rex")
+    assert_equal __, d.name
   end
 
   def test_attr_accessor
-    k = OOPPrzykladyKlasy::Kot.new("Mruczek")
-    assert_equal __, k.imie
-    k.imie = "Filemon"
-    assert_equal __, k.imie
+    c = OOPExamples::Cat.new("Whiskers")
+    assert_equal __, c.name
+    c.name = "Felix"
+    assert_equal __, c.name
   end
 
-  def test_attr_reader_tylko_odczyt
-    p = OOPPrzykladyKlasy::Punkt.new(3, 4)
+  def test_attr_reader_is_read_only
+    p = OOPExamples::Point.new(3, 4)
     assert_equal __, p.x
     assert_equal __, p.y
   end
 
-  def test_klasa_obiektu
-    s = OOPPrzykladyKlasy::Auto.new
-    assert_equal __, s.class
+  def test_object_class
+    c = OOPExamples::Car.new
+    assert_equal __, c.class
   end
 
-  def test_superklasa
-    assert_equal __, OOPPrzykladyKlasy::Auto.superclass
+  def test_superclass
+    assert_equal __, OOPExamples::Car.superclass
   end
 
   def test_is_a
-    p = OOPPrzykladyKlasy::Ptak.new
-    assert_equal __, p.is_a?(OOPPrzykladyKlasy::Ptak)
-    assert_equal __, p.is_a?(OOPPrzykladyKlasy::Zwierze)
+    b = OOPExamples::Bird.new
+    assert_equal __, b.is_a?(OOPExamples::Bird)
+    assert_equal __, b.is_a?(OOPExamples::Animal)
   end
 
   def test_respond_to
-    k = OOPPrzykladyKlasy::Kalkulator.new
-    assert_equal __, k.respond_to?(:dodaj)
-    assert_equal __, k.respond_to?(:odejmij)
+    c = OOPExamples::Calculator.new
+    assert_equal __, c.respond_to?(:add)
+    assert_equal __, c.respond_to?(:subtract)
   end
 
-  def test_dziedziczenie_metody
-    k = OOPPrzykladyKlasy::Kolo.new
-    assert_equal __, k.opis
+  def test_method_inheritance
+    c = OOPExamples::Circle.new
+    assert_equal __, c.description
   end
 
-  def test_nadpisanie_metody
-    assert_equal __, OOPPrzykladyKlasy::Pochodna.new.powitanie
-    assert_equal __, OOPPrzykladyKlasy::Baza.new.powitanie
+  def test_method_override
+    assert_equal __, OOPExamples::Derived.new.greeting
+    assert_equal __, OOPExamples::Base.new.greeting
   end
 
-  def test_super_wywoluje_metode_rodzica
-    assert_equal __, OOPPrzykladyKlasy::Dziecko.new.przedstaw_sie
+  def test_super_calls_parent_method
+    assert_equal __, OOPExamples::Child.new.introduce
   end
 
-  def test_metoda_klasowa
-    OOPPrzykladyKlasy::Licznik.resetuj
-    OOPPrzykladyKlasy::Licznik.zwieksz
-    OOPPrzykladyKlasy::Licznik.zwieksz
-    assert_equal __, OOPPrzykladyKlasy::Licznik.wartosc
+  def test_class_method
+    OOPExamples::Counter.reset
+    OOPExamples::Counter.increment
+    OOPExamples::Counter.increment
+    assert_equal __, OOPExamples::Counter.value
   end
 end
